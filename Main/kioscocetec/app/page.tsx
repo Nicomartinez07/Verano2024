@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { CiInstagram } from "react-icons/ci";
+import { IoIosMail } from "react-icons/io";
 
 export default function Home() {
   return (
@@ -30,13 +31,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
+          <IoIosMail />
           Mail
         </a>
       </footer>
