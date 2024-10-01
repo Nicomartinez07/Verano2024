@@ -1,0 +1,32 @@
+.main-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Tres columnas por fila */
+    grid-auto-rows: auto;
+    gap: 30px; /* Incrementar el espacio entre los productos */
+    padding: 20px;
+  }
+  
+  .product-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px; /* Aumentar el padding para agrandar el contenido */
+    text-align: center;
+    max-width: 350px; /* Limitar el tamaño máximo de cada producto */
+  }
+  
+  .product-item img {
+    width: 200px; /* Aumentar el tamaño de la imagen */
+    height: 200px; /* Aumentar el tamaño de la imagen */
+    object-fit: cover;
+    border-radius: 8px; /* Redondear las esquinas de la imagen */
+  }
+  
+  .product-item p {
+    margin-top: 15px; /* Aumentar el margen superior de la descripción */
+    font-size: 16px; /* Hacer el texto un poco más grande */
+    color: #333;
+  }
+  
