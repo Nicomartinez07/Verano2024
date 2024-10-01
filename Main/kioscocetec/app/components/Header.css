@@ -1,8 +1,22 @@
-.py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+.titulo {
+    border: 2px;
 }
-.border-b{
-    border-bottom-width: 1px;
+.header {
+    background-color: black;
+    padding: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: black;
+    border: 1px solid #ddd;
 }
 
+/* class="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"*/
+/* class="h-9 w-full border-input px-3 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-w-14 md:max-w-72 appearance-none rounded-md border bg-white py-2 pl-4 pr-10 md:pl-2 md:pr-8 lg:pl-4 lg:pr-10 transition-opacity inline-block" */
+/* enterkeyhint="search"*/
+/* class="lucide lucide-search -ml-7 block h-5 w-5"*/
