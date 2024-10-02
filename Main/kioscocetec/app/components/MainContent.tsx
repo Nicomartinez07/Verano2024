@@ -8,7 +8,7 @@ const products = [
     name: 'Alfajor Oreo - 56g',
     href: '#',
     price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/NlHzImpNavvrGIX4CQEzW4svEN6tdlPvO0TWqQ-_nrM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9odHRw/Mi5tbHN0YXRpYy5j/b20vRF9OUV9OUF83/MzQyMzQtTUxBNzI2/MDU3MTc3NjFfMTAy/MDIzLU8ud2VicA',
+    imageSrc: 'https://imgs.search.brave.com/PTbhs8X1DQ-ilbk9weaSuqzNys1A-lgS5GqiF3s4lrY/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9hbGJl/cmRpc2EudnRleGlt/Zy5jb20uYnIvYXJx/dWl2b3MvaWRzLzE3/Mzk4Ni0yOTItMjky/L0FsZmFqb3ItVHJp/cGxlLU9yZW8tMXVu/LXgtNTVnci5wbmc_/dj02MzgxNDY1MzAx/NzY2NzAwMDA',
     imageAlt: 'Alfajor Oreo.',
   },
   {
@@ -105,32 +105,38 @@ const products = [
   },
   
 ]
-
 export default function Example() {
+
   return (
     <div className="bg-#be5600">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <a key={product.id} href={product.href} className="group">
-              <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
-                <img
-                  alt={product.imageAlt}
-                  src={product.imageSrc}
-                  className="h-full w-full object-cover object-center group-hover:opacity-75"
-                />
-              </div>
-              <h3 className="mt-4 text-sm text-gray-900">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">{product.price}</p>
-            </a>
+            <div key={product.id} className="group">
+              <a href={product.href} className="block">
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                  <img
+                    alt={product.imageAlt}
+                    src={product.imageSrc}
+                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                  />
+                </div>
+                <h3 className="mt-4 text-sm text-gray-900">{product.name}</h3>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-lg font-medium text-gray-900">{product.price}</p>
+                  <button className="ml-2 text-sm rounded-md bg-blue-500 text-white py-1 px-2 hover:bg-blue-600">
+                    + Añadir
+                  </button>
+                </div>
+              </a>
+            </div>
           ))}
         </div>
       </div>
     </div>
-  )
-
-};
+  );
+}
 
 
 
