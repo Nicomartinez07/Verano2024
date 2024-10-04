@@ -1,110 +1,351 @@
 import React from 'react';
 import './MainContent.css';
+import { LiaStarSolid } from 'react-icons/lia';
 
 const products = [
   {
-    /*ALFAJORES*/
     id: 1,
-    name: 'Alfajor Oreo - 56g',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/PTbhs8X1DQ-ilbk9weaSuqzNys1A-lgS5GqiF3s4lrY/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9hbGJl/cmRpc2EudnRleGlt/Zy5jb20uYnIvYXJx/dWl2b3MvaWRzLzE3/Mzk4Ni0yOTItMjky/L0FsZmFqb3ItVHJp/cGxlLU9yZW8tMXVu/LXgtNTVnci5wbmc_/dj02MzgxNDY1MzAx/NzY2NzAwMDA',
-    imageAlt: 'Alfajor Oreo.',
-  },
-  {
-    id: 2,
-    name: 'Alfajor Guaymallen - 70g',
-    href: '#',
-    price: '$500',
-    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvtwZPMi13e-ozZ-QZyvZCh6719nbrQHEVlA&s',
-    imageAlt: 'Alfajor Guaymallen.',
-  },
-  {
-    id: 3,
-    name: 'Alfajor Aguila - 50g',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/VxfBWB8w2i-1Qu1wUIZmIcyUtgwQe4Vc4-uhfccimwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/a2lvc2NvZWx0YW5v/LmNvbS5hci80My1O/aWFyYV9sYXJnZS9h/bGZham9yLWFndWls/YS1taW5pdG9ydGEt/Y29jby03MDUtZ3Iu/anBn',
-    imageAlt: 'Alfajor Aguila.',
-  },
-  {
-    id: 4,
-    name: 'Alfajor Rasta - 70g',
-    href: '#',
-    price: '$1400',
-    imageSrc: 'https://imgs.search.brave.com/pF9FZ08lWgHDHUx_ykgFaSCUIDIp9dRrBRGfcMc1uy4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9hY2Ru/Lm1pdGllbmRhbnVi/ZS5jb20vc3RvcmVz/LzMxMy81MDcvcHJv/ZHVjdHMvbmVncm8x/LTk0NzQzOTUyZTE1/YjE1MGUyODE2ODc1/NTAwMTU0MzcyLTEw/MjQtMTAyNC0wYzUz/MjZmZDA2NWZiMTJj/NTIxNzE0ODM2NDky/NzU2MC0yNDAtMC5q/cGc',
-    imageAlt: 'Alfajor Rasta.',
-  },
-
-  /*GASEOSAS*/
-  {
-    id: 5,
-    name: 'Gaseosa Fanta - 500ml',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/8E2p4AOVQ1maVAXVxz5S6sE87ngsOdFAz5gzdEvcuDE/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9odHRw/Mi5tbHN0YXRpYy5j/b20vRF9OUV9OUF85/MjU3MjEtTUxBNDcy/MTY4NjMwMjhfMDgy/MDIxLVYud2VicA',
-    imageAlt: 'Gaseosa Fanta.',
-  },
-  {
-    id: 6,
-    name: 'Gaseosa Coca Cola - 500ml',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/4Sf1QIklrhcHZ_ehuKTtuRpFVioSb0UJqY7XyC85WMk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9odHRw/Mi5tbHN0YXRpYy5j/b20vRF9OUV9OUF83/NzE1OTYtTUxBNDQy/NTgxNjMzNjFfMTIy/MDIwLU8ud2VicA',
-    imageAlt: 'Gaseosa Coca Cola.',
-  },
-  {
-    id: 7,
-    name: 'Gaseosa Sprite - 500ml',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://jumboargentina.vtexassets.com/arquivos/ids/791799/Gaseosa-Sprite-Lima-lim-n-500-Ml-1-10500.jpg?v=638291793659030000',
-    imageAlt: 'Gaseosa Sprite.',
-  },
-  {
-    id: 8,
-    name: 'Gaseosa Aquarius - 500ml',
-    href: '#',
-    price: '$1000',
-    imageSrc: 'https://imgs.search.brave.com/zfosHtLonDdHS-CDwGSsi1TTsmc2-lfeU-SkSRtHIzk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMucmFwcGkuY29t/LmFyL3Byb2R1Y3Rz/LzIwMmVlNjczLWNj/ZTQtNDg0ZS1hMWEx/LTQ4NzQxYTk0ZjBm/My5wbmc_ZD0zMDB4/MzAwJmU9d2VicCZx/PTEw',
-    imageAlt: 'Gaseosa Aquarius.',
-  },
-  
-  /*GALLETITAS*/
-  {
-    id: 9,
-    name: 'Galletitas Pepas Trio - 200g',
+    name: 'Pepas trio',
     href: '#',
     price: '$700',
     imageSrc: 'https://imgs.search.brave.com/Kb-GATqHUFkfGuJb5JLQa-Bol6IwB8kD3QcucPdFFDU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZGlzdHJpYnVpZG9y/YXBvcC5jb20uYXIv/d3AtY29udGVudC91/cGxvYWRzLzIwMTYv/MDkvZ2FsbGV0aXRh/cy10cmlvLXBlcGFz/LW9mZXJ0YS5qcGc',
-    imageAlt: 'Galletitas Pepas Trio.',
+    imageAlt: 'a',
   },
   {
-      id: 10,
-      name: 'Galletitas Pitusas - 200g',
-      href: '#',
-      price: '$800',
-      imageSrc: 'https://imgs.search.brave.com/64NyKSHregvP74Uq-E8G_UggxpHGBA8AkMnhkaac-sY/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9hcmRp/YXByb2QudnRleGFz/c2V0cy5jb20vYXJx/dWl2b3MvaWRzLzMx/Njc1OS01MDAtYXV0/bz92PTYzODU5OTQ2/NDA0MzI3MDAwMCZ3/aWR0aD01MDAmaGVp/Z2h0PWF1dG8mYXNw/ZWN0PXRydWU.jpeg',
-      imageAlt: 'Galletitas Pitusas.',
+    id: 2,
+    name: 'Mini Toddy',
+    href: '#',
+    price: '$600',
+    imageSrc: 'https://cdn11.bigcommerce.com/s-3stx4pub31/images/stencil/1280x1280/products/9780/26694/mini-toddy-galletitas-50g__49003.1702500962.jpg?c=2',
+    imageAlt: 'a',
   },
   {
-    id: 11,
-    name: 'Galletitas Don Satur - 200g',
+    id: 4,
+    name: 'Don Satur Saladas',
     href: '#',
     price: '$800',
-    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWQsU5wrRlKywMWckGWTAA4_3FlXfxgIAxXA&s',
-    imageAlt: 'Galletitas Don Satur.',
+    imageSrc: 'https://m.media-amazon.com/images/I/51U0NgN1KbL.jpg',
+    imageAlt: 'a',
   },
   {
-    id: 12,
-    name: 'Galletitas Pepitos - 118g',
+    id: 5,
+    name: 'Don Satur Dulces',
+    href: '#',
+    price: '$800',
+    imageSrc: 'https://f2h.shop/media/catalog/product/cache/ab45d104292f1bb63d093e6be8310c97/b/i/bizcochitosdulcesdegrasadonsatur.png',
+    imageAlt: 'a',
+  },
+  {
+    id: 3,
+    name: 'Pepitos',
     href: '#',
     price: '$1200',
     imageSrc: 'https://imgs.search.brave.com/kIO_m4w9xaHTGnHD4NH06zBpIRutkIfBvBgKULcKw8c/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZGlzdHJpYnVpZG9y/YXBvcC5jb20uYXIv/d3AtY29udGVudC91/cGxvYWRzLzIwMTcv/MDcvZ2FsbGV0aXRh/cy1wZXBpdG9zLXBv/ci1tYXlvci5qcGc',
-    imageAlt: 'Galletitas Pepitos.',
+    imageAlt: 'a',
+  },
+  {
+    id: 9,
+    name: 'Oreos',
+    href: '#',
+    price: '$1200',
+    imageSrc: 'https://imgs.search.brave.com/A9L_6WB3rtomWHLTGxySPPVCpsny03KU2jOWO9myRts/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/ZGlzdHJpYnVpZG9y/YXBvcC5jb20uYXIv/d3AtY29udGVudC91/cGxvYWRzLzIwMTYv/MDUvZ2FsbGV0aXRh/cy1vcmVvLXZlbnRh/LmpwZw',
+    imageAlt: 'a',
+  },
+ 
+  
+  
+  {
+    id: 7,
+    name: 'Duquesa',
+    href: '#',
+    price: '$800',
+    imageSrc: 'https://www.distribuidorapop.com.ar/wp-content/uploads/2023/10/GALLETITAS-TERRABUSI-DUQUESA-115GR-POP-ARGENTINA.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 8,
+    name: 'Melba',
+    href: '#',
+    price: '$800',
+    imageSrc: 'https://www.distribuidorapop.com.ar/wp-content/uploads/2016/08/galletitas-melba-por-mayor.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 6,
+    name: 'Pitusas',
+    href: '#',
+    price: '$800',
+    imageSrc: 'https://imgs.search.brave.com/PlURa1ePFg6cSiKuS7uBGSOxnO-uDHvniS3dNuVxjns/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hcmRp/YXByb2QudnRleGFz/c2V0cy5jb20vYXJx/dWl2b3MvaWRzLzMx/Njc1OS01MDAtYXV0/bz92PTYzODU5OTQ2/NDA0MzI3MDAwMCZ3/aWR0aD01MDAmaGVp/Z2h0PWF1dG8mYXNw/ZWN0PXRydWU',
+    imageAlt: 'a',
   },
   
-]
+  {
+    id: 11,
+    name: 'Fanta',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://ardiaprod.vtexassets.com/arquivos/ids/307616/Gaseosa-Fanta-Naranja-500-Ml-_1.jpg?v=638599332519170000',
+    imageAlt: 'a',
+  },
+  {
+    id: 10,
+    name: 'Aquarius',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://jumboargentina.vtexassets.com/arquivos/ids/783111/Agua-Saborizada-Aquarius-Manzana-500-Ml-1-469228.jpg?v=638206693783500000',
+    imageAlt: 'a',
+  },
+  {
+    id: 14,
+    name: 'Coca Cola',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://ardiaprod.vtexassets.com/arquivos/ids/307622/Gaseosa-CocaCola-Sabor-Original-500-Ml-_1.jpg?v=638599332594100000',
+    imageAlt: 'a',
+  },
+  {
+    id: 12,
+    name: 'Sprite',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://jumboargentina.vtexassets.com/arquivos/ids/791799/Gaseosa-Sprite-Lima-lim-n-500-Ml-1-10500.jpg?v=638291793659030000',
+    imageAlt: 'a',
+  },
+  {
+    id: 13,
+    name: 'Seven Up',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/323/592/products/a-vacia-copia1-d8743be8bf776e47a415946714214897-1024-10241-a33b25d8e10476c6c316414059802723-640-0.jpg',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 15,
+    name: 'Bagio',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://http2.mlstatic.com/D_883379-MLA50260602960_062022-C.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 16,
+    name: 'Guaymallen Triple',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://www.rimoldimayorista.com.ar/datos/uploads/mod_catalogo/31308/guaymallen-triple-x-3-614e08a31ad45.png',
+    imageAlt: 'a',
+  },
+  {
+    id: 17,
+    name: 'Tita',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmD-8xvcik4wtF0ok1oKm5V-f5yD8l7pQfZg&s',
+    imageAlt: 'a',
+  },
+  {
+    id: 18,
+    name: 'Milka',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://www.farmaciassanchezantoniolli.com.ar/13164-large_default/milka-mousse-alfajor-triple-x-55g-.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 19,
+    name: 'Shot',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://http2.mlstatic.com/D_NQ_NP_811767-MLA53825682135_022023-O.webp',
+    imageAlt: 'a',
+  },
+  {
+    id: 20,
+    name: 'Oreo',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/001/185/658/products/oreotriple-43d148d1c1f4457f7417152891747509-1024-1024.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 21,
+    name: 'Rasta Blanco',
+    href: '#',
+    price: '$1200',
+    imageSrc: 'https://cdn11.bigcommerce.com/s-3stx4pub31/images/stencil/1280x1280/products/11987/30784/rasta-alfajor-blanco-70g__50837.1724442132.jpg?c=2',
+    imageAlt: 'a',
+  },
+  {
+    id: 22,
+    name: 'Rasta Negro',
+    href: '#',
+    price: '$1200',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/004/231/250/products/whatsapp-image-2024-05-09-at-10-10-51-6d012a87858c5e66fe17152606073345-640-0.jpeg',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 24,
+    name: 'Saladix',
+    href: '#',
+    price: '$600',
+    imageSrc: 'https://www.distribuidorapop.com.ar/wp-content/uploads/2019/06/saladix-jamon-30gr-distirbuidora-pop.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 25,
+    name: 'Club Social',
+    href: '#',
+    price: '$400',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN13Cks5JDHmoyK-ewTbwp9isSMPPD5cMx1w&s',
+    imageAlt: 'a',
+  },
+  {
+    id: 23,
+    name: 'Nikitos',
+    href: '#',
+    price: '$1000',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/323/592/products/nikitos-papas1-dd249f87ca157dd3ea16678429238504-640-0.jpg',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 27,
+    name: 'Papas Quento Asado Criollo',
+    href: '#',
+    price: '$1600',
+    imageSrc: 'https://http2.mlstatic.com/D_NQ_NP_800663-MLA73736455776_012024-O.webp',
+    imageAlt: 'a',
+  },
+  {
+    id: 28,
+    name: 'Papas Quento BBQ',
+    href: '#',
+    price: '$1600',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/001/218/857/products/54231-70be5ab884b3e0ce1516741546636224-1024-1024.png',
+    imageAlt: 'a',
+  },
+  {
+    id: 26,
+    name: 'Papas Quento Jamon',
+    href: '#',
+    price: '$1600',
+    imageSrc: 'https://modomarketar.vteximg.com.br/arquivos/ids/164210/Papas-Fritas-Quento-Jamon-Serrano-X-90-Grs-1-2909.jpg?v=637941117695670000',
+    imageAlt: 'a',
+  },
+  {
+    id: 29,
+    name: 'Bull Dog',
+    href: '#',
+    price: '$600',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/001/218/857/products/1220-pastillas-bulldog-sandia-x12-7ce801140f5a86657d16986891226934-1024-1024.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 37,
+    name: 'Palitos de la Selva',
+    href: '#',
+    price: '$200',
+    imageSrc: 'https://http2.mlstatic.com/D_NQ_NP_657750-MLU73787237206_012024-O.webp',
+    imageAlt: 'a',
+  },
+  {
+    id: 40,
+    name: 'Bubbaloo Tutti Frutti',
+    href: '#',
+    price: '$200',
+    imageSrc: 'https://ardiaprod.vtexassets.com/arquivos/ids/326378/Chicle-Bubbaloo-Tutti-Frutti-5-Gr-_1.jpg?v=638599594320730000',
+    imageAlt: 'a',
+  },
+  {
+    id: 32,
+    name: 'Chupetines con Chicle',
+    href: '#',
+    price: '$200',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/001/061/483/products/whatsapp-image-2024-04-13-at-10-17-52-1e5037f5abe7abfed417130143769747-640-0.jpeg',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 36,
+    name: 'Sapito',
+    href: '#',
+    price: '$200',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/516/580/products/whatsapp-image-2022-10-24-at-16-49-01-71-41b0e600648a7b898c16666410673971-1024-1024.jpeg',
+    imageAlt: 'a',
+  },
+  {
+    id: 31,
+    name: 'Rhodesia',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://www.distribuidorapop.com.ar/wp-content/uploads/2014/06/rhodesia-precio-mayorista-768x768.jpg.webp',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 33,
+    name: 'Pipas',
+    href: '#',
+    price: '$300',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOCgW-RquJBAG4PE1aKcuSqA4QSLDHWLgewg&s',
+    imageAlt: 'a',
+  },
+  {
+    id: 38,
+    name: 'Tic Tacs',
+    href: '#',
+    price: '$600',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/001/185/658/products/786000271-37bdfde807a869bace16794021567358-1024-1024.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 41,
+    name: 'Mantecol 26g',
+    href: '#',
+    price: '$600',
+    imageSrc: 'https://ardiaprod.vtexassets.com/arquivos/ids/323018/Mantecol-bajo-en-Sodio-26-Gr-_1.jpg?v=638599550798330000',
+    imageAlt: 'a',
+  },
+  {
+    id: 34,
+    name: 'Cubanitos',
+    href: '#',
+    price: '$100',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/516/580/products/dulce-de-leche1-38429963999280148516195254579587-1024-1024.jpg',
+    imageAlt: 'a',
+  },
+  {
+    id: 35,
+    name: 'Hamlet',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgb4lqDCVvBGkxHGiIsgIEV0bRY3aLuux3Ow&s',
+    imageAlt: 'a',
+  },
+  {
+    id: 30,
+    name: 'Beldent',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://acdn.mitiendanube.com/stores/323/592/products/beldent-menta-3dceda23ad189c5d7d17056840414525-1024-1024.jpg',
+    imageAlt: 'a',
+  },
+  
+  {
+    id: 39,
+    name: 'Flow Cereal',
+    href: '#',
+    price: '$500',
+    imageSrc: 'https://http2.mlstatic.com/D_Q_NP_848801-MLU76991294375_062024-O.webp',
+    imageAlt: 'a',
+  },
+  
+  
+];
+
+  
 export default function Example() {
 
   return (
@@ -126,8 +367,8 @@ export default function Example() {
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-lg font-medium text-gray-900">{product.price}</p>
                   <button className="ml-2 text-sm rounded-md bg-blue-500 text-white py-1 px-2 hover:bg-blue-600">
-                    + Añadir
-                  </button>
+                    Cetec
+                  </button> 
                 </div>
               </a>
             </div>
@@ -137,9 +378,5 @@ export default function Example() {
     </div>
   );
 }
-
-
-
-
 
 
