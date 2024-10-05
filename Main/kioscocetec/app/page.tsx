@@ -1,16 +1,23 @@
-import Image from "next/image";
-import { CiInstagram } from "react-icons/ci";
-import { IoIosMail } from "react-icons/io";
-import MainContent from "./components/MainContent";
-import Footer from "./components/Footer";
-import Header  from "./components/Header";
+// app/page.tsx
+"use client"; // Add this line at the top of the file
 
-export default function Home() {
+import React, { useState } from 'react';
+import Header from './components/Header';
+import MainContent from './components/MainContent';
+import Footer from './components/Footer';
+
+// Your component code follows...
+
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <Header/>
-      <MainContent/>
+    <div>
+      <Header onSearch={setSearchTerm} />
+      <MainContent searchTerm={searchTerm} />
       <Footer/>
     </div>
   );
-}
+};
+
+export default App;
