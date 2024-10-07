@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 import mysql.connector
+from mysql.connector import Error
 
 # Función auxiliar para obtener diccionarios
 def dict_factory(cursor, row):
@@ -132,3 +133,61 @@ def roles():
     cursor.close()
     db.close()
     return jsonify(result)
+
+@app.route("/producto/<int:id>")
+def detalle_producto(id):
+    try:
+        # Conexión a la base de datos
+        db = mysql.connector.connect(**config)
+        
+        if db.is_connected():
+            # Crear un cursor
+            cursor = db.cursor(dictionary=True)
+            
+            # Establecer el modo para obtener resultados como diccionarios
+            cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+            
+            # 1. Consulta para obtener el producto
+            query_producto = "SELECT id, nombre, descripcion, precio, id_categoria, id_marca FROM Productos WHERE id = %s"
+            cursor.execute(query_producto, (id,))
+            product = cursor.fetchone()
+
+            # Si el producto no existe, devolver error 404
+            if not product:
+                cursor.close()
+                return jsonify({"error": "Producto no encontrado"}), 404
+
+            # 2. Consulta para obtener el nombre de la Categoría (si existe)
+            query_categoria = "SELECT nombre_categoria FROM Categorias WHERE id = %s"
+            cursor.execute(query_categoria, (product['id_categoria'],))
+            categoria = cursor.fetchone()
+
+            # 3. Consulta para obtener el nombre de la Marca (si existe)
+            query_marca = "SELECT nombre_marca FROM Marcas WHERE id = %s"
+            cursor.execute(query_marca, (product['id_marca'],))
+            marca = cursor.fetchone()
+
+            # Cerrar el cursor después de usarlo
+            cursor.close()
+
+            # Añadir los nombres de la categoría y marca al producto
+            if categoria:
+                product['nombre_categoria'] = categoria['nombre_categoria']
+            else:
+                product['nombre_categoria'] = None  # O el valor que prefieras
+
+            if marca:
+                product['nombre_marca'] = marca['nombre_marca']
+            else:
+                product['nombre_marca'] = None  # O el valor que prefieras
+
+            # Devolver el producto con las marcas y categorías
+            return jsonify(product)
+
+    except Error as e:
+        return jsonify({"error": str(e)}), 500
+    
+    finally:
+        # Asegurarse de que la conexión se cierre siempre
+        if db.is_connected():
+            db.close()
