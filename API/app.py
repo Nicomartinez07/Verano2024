@@ -2,11 +2,6 @@ from flask import Flask, jsonify
 import mysql.connector
 from mysql.connector import Error
 
-# Función auxiliar para obtener diccionarios
-def dict_factory(cursor, row):
-    """Arma un diccionario con los valores de la fila"""
-    return {cursor.column_names[i]: row[i] for i in range(len(row))}
-
 # Configuración de la conexión
 config = {
     'user': 'kioskocetec',        # Cambia esto por tu usuario
@@ -33,8 +28,8 @@ def productos():
     query = "SELECT * FROM Productos"
     cursor.execute(query)
 
-    # Convertir objeto cursor a lista de diccionarios
-    result = [dict_factory(cursor, row) for row in cursor.fetchall()]
+    result = cursor.fetchall()
+
 
     # Cerrar cursor y conexión
     cursor.close()
@@ -47,7 +42,7 @@ def usuarios():
     db = mysql.connector.connect(**config)
 
     # Crear un cursor
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
 
     # Establecer el método para obtener resultados como diccionarios
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
@@ -57,12 +52,12 @@ def usuarios():
     cursor.execute(query)
 
     # Convertir objeto cursor a lista de diccionarios
-    resultado = [dict_factory(cursor, row) for row in cursor.fetchall()]
+    result = cursor.fetchall()
 
     # Cerrar cursor y conexión
     cursor.close()
     db.close()
-    return jsonify(resultado)
+    return jsonify(result)
 
 @app.route("/marcas")
 def marcas():
@@ -70,7 +65,7 @@ def marcas():
     db = mysql.connector.connect(**config)
 
     # Crear un cursor
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
 
     # Establecer el método para obtener resultados como diccionarios
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
@@ -80,7 +75,7 @@ def marcas():
     cursor.execute(query)
 
     # Convertir objeto cursor a lista de diccionarios
-    result = [dict_factory(cursor, row) for row in cursor.fetchall()]
+    result = cursor.fetchall()
 
     # Cerrar cursor y conexión
     cursor.close()
@@ -93,7 +88,7 @@ def categorias():
     db = mysql.connector.connect(**config)
 
     # Crear un cursor
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
 
     # Establecer el método para obtener resultados como diccionarios
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
@@ -103,7 +98,7 @@ def categorias():
     cursor.execute(query)
 
     # Convertir objeto cursor a lista de diccionarios
-    result = [dict_factory(cursor, row) for row in cursor.fetchall()]
+    result = cursor.fetchall()
 
     # Cerrar cursor y conexión
     cursor.close()
@@ -117,7 +112,7 @@ def roles():
     db = mysql.connector.connect(**config)
 
     # Crear un cursor
-    cursor = db.cursor()
+    cursor = db.cursor(dictionary=True)
 
     # Establecer el método para obtener resultados como diccionarios
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
@@ -127,7 +122,7 @@ def roles():
     cursor.execute(query)
 
     # Convertir objeto cursor a lista de diccionarios
-    result = [dict_factory(cursor, row) for row in cursor.fetchall()]
+    result = cursor.fetchall()
 
     # Cerrar cursor y conexión
     cursor.close()
@@ -148,7 +143,7 @@ def detalle_producto(id):
             cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
             
             # 1. Consulta para obtener el producto
-            query_producto = "SELECT id, nombre, descripcion, precio, id_categoria, id_marca FROM Productos WHERE id = %s"
+            query_producto = "SELECT Id, Nombre, Precio_venta, Id_categoria,Id_marca FROM Productos WHERE Id = %s"
             cursor.execute(query_producto, (id,))
             product = cursor.fetchone()
 
@@ -158,13 +153,13 @@ def detalle_producto(id):
                 return jsonify({"error": "Producto no encontrado"}), 404
 
             # 2. Consulta para obtener el nombre de la Categoría (si existe)
-            query_categoria = "SELECT nombre_categoria FROM Categorias WHERE id = %s"
-            cursor.execute(query_categoria, (product['id_categoria'],))
+            query_categoria = "SELECT Nombre FROM Categorias WHERE Id = %s"
+            cursor.execute(query_categoria, (product['Id_categoria'],))
             categoria = cursor.fetchone()
 
             # 3. Consulta para obtener el nombre de la Marca (si existe)
-            query_marca = "SELECT nombre_marca FROM Marcas WHERE id = %s"
-            cursor.execute(query_marca, (product['id_marca'],))
+            query_marca = "SELECT Nombre FROM Marcas WHERE Id = %s"
+            cursor.execute(query_marca, (product['Id_marca'],))
             marca = cursor.fetchone()
 
             # Cerrar el cursor después de usarlo
@@ -172,12 +167,12 @@ def detalle_producto(id):
 
             # Añadir los nombres de la categoría y marca al producto
             if categoria:
-                product['nombre_categoria'] = categoria['nombre_categoria']
+                product['nombre_categoria'] = categoria['Nombre']
             else:
                 product['nombre_categoria'] = None  # O el valor que prefieras
 
             if marca:
-                product['nombre_marca'] = marca['nombre_marca']
+                product['nombre_marca'] = marca['Nombre']
             else:
                 product['nombre_marca'] = None  # O el valor que prefieras
 
