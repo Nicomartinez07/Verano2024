@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import Error
 
@@ -36,28 +36,6 @@ def productos():
     db.close()
     return jsonify(result)
 
-@app.route("/usuarios")
-def usuarios():
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Usuario"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
 
 @app.route("/marcas")
 def marcas():
@@ -105,31 +83,7 @@ def categorias():
     db.close()
     return jsonify(result)
 
-
-@app.route("/roles")
-def roles():
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Roles"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
-
-@app.route("/producto/<int:id>")
+@app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
     try:
         # Conexión a la base de datos
@@ -138,51 +92,106 @@ def detalle_producto(id):
         if db.is_connected():
             # Crear un cursor
             cursor = db.cursor(dictionary=True)
-            
-            # Establecer el modo para obtener resultados como diccionarios
             cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-            
-            # 1. Consulta para obtener el producto
-            query_producto = "SELECT Id, Nombre, Precio_venta, Id_categoria,Id_marca FROM Productos WHERE Id = %s"
-            cursor.execute(query_producto, (id,))
-            product = cursor.fetchone()
 
-            # Si el producto no existe, devolver error 404
-            if not product:
+            if request.method == 'GET':
+                # 1. Consulta para obtener el producto
+                query_producto = "SELECT Id, Nombre, Precio_venta, Id_categoria, Id_marca FROM Productos WHERE Id = %s"
+                cursor.execute(query_producto, (id,))
+                product = cursor.fetchone()
+
+                # Si el producto no existe, devolver error 404
+                if not product:
+                    cursor.close()
+                    return jsonify({"error": "Producto no encontrado"}), 404
+
+                # 2. Consulta para obtener el nombre de la Categoría (si existe)
+                query_categoria = "SELECT Nombre FROM Categorias WHERE Id = %s"
+                cursor.execute(query_categoria, (product['Id_categoria'],))
+                categoria = cursor.fetchone()
+
+                # 3. Consulta para obtener el nombre de la Marca (si existe)
+                query_marca = "SELECT Nombre FROM Marcas WHERE Id = %s"
+                cursor.execute(query_marca, (product['Id_marca'],))
+                marca = cursor.fetchone()
+
+                # Añadir los nombres de la categoría y marca al producto
+                product['nombre_categoria'] = categoria['Nombre'] if categoria else None
+                product['nombre_marca'] = marca['Nombre'] if marca else None
+
                 cursor.close()
-                return jsonify({"error": "Producto no encontrado"}), 404
+                return jsonify(product)
 
-            # 2. Consulta para obtener el nombre de la Categoría (si existe)
-            query_categoria = "SELECT Nombre FROM Categorias WHERE Id = %s"
-            cursor.execute(query_categoria, (product['Id_categoria'],))
-            categoria = cursor.fetchone()
+            elif request.method == 'DELETE':
+                # Consulta para borrar el producto
+                delete_producto = "DELETE FROM Productos WHERE Id = %s"
+                cursor.execute(delete_producto, (id,))
+                db.commit()
 
-            # 3. Consulta para obtener el nombre de la Marca (si existe)
-            query_marca = "SELECT Nombre FROM Marcas WHERE Id = %s"
-            cursor.execute(query_marca, (product['Id_marca'],))
-            marca = cursor.fetchone()
+                if cursor.rowcount == 0:
+                    cursor.close()
+                    return jsonify({"error": "Producto no encontrado"}), 404
 
-            # Cerrar el cursor después de usarlo
-            cursor.close()
+                cursor.close()
+                return jsonify({"message": "Producto eliminado correctamente"}), 200
 
-            # Añadir los nombres de la categoría y marca al producto
-            if categoria:
-                product['nombre_categoria'] = categoria['Nombre']
+    except mysql.connector.Error as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if db.is_connected():
+            db.close()
+
+
+#Put
+@app.route("/producto", methods=('PUT',))
+def insertar_producto():
+    try:
+        # Conexión a la base de datos
+        db = mysql.connector.connect(**config)
+        
+        if db.is_connected():
+            # Crear un cursor
+            cursor = db.cursor()
+            data = request.get_json()
+
+            # Validar que todos los campos necesarios estén presentes en el JSON
+            required_fields = ['Nombre', 'Img', 'Precio_compra', 'Precio_venta', 'Stock', 'Cantidad_Gramos', 'Id_categoria', 'Id_marca']
+            if not all(field in data for field in required_fields):
+                return jsonify({"error": "Faltan campos obligatorios"}), 400
+
+            # Extraer los datos del producto
+            nombre = data['Nombre']
+            img = data['Img']
+            precio_compra = data['Precio_compra']
+            precio_venta = data['Precio_venta']
+            stock = data['Stock']
+            cantidad_gramos = data['Cantidad_Gramos']
+            id_categoria = data['Id_categoria']
+            id_marca = data['Id_marca']
+
+            # Consulta SQL para insertar el producto
+            query_insertar = """
+                INSERT INTO Productos (Id_marca, Id_categoria, Nombre, Img, Precio_compra, Precio_venta, Stock, Cantidad_Gramos)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query_insertar, (id_marca, id_categoria, nombre, img, precio_compra, precio_venta, stock, cantidad_gramos))
+            db.commit()
+
+            # Confirmar que el producto se insertó correctamente
+            if cursor.rowcount == 1:
+                # Obtener el ID del producto recién insertado
+                id_producto = cursor.lastrowid
+                cursor.close()
+                return jsonify({"message": "Producto insertado correctamente", "Id": id_producto}), 201
             else:
-                product['nombre_categoria'] = None  # O el valor que prefieras
+                cursor.close()
+                return jsonify({"error": "Error al insertar el producto"}), 500
 
-            if marca:
-                product['nombre_marca'] = marca['Nombre']
-            else:
-                product['nombre_marca'] = None  # O el valor que prefieras
-
-            # Devolver el producto con las marcas y categorías
-            return jsonify(product)
-
-    except Error as e:
+    except mysql.connector.Error as e:
         return jsonify({"error": str(e)}), 500
     
     finally:
-        # Asegurarse de que la conexión se cierre siempre
         if db.is_connected():
             db.close()
+
