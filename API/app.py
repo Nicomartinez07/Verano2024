@@ -195,3 +195,5 @@ def insertar_producto():
         if db.is_connected():
             db.close()
 
+
+
