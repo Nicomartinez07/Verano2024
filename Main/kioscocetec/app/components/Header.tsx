@@ -1,11 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-const Header = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+// Define el tipo de los productos seleccionados
+interface Product {
+  name: string;
+  quantity: number;
+}
 
-  const handleSearch = (event) => {
+// Define los tipos de los props que recibe el componente Header
+interface HeaderProps {
+  onSearch: (term: string) => void;
+  selectedProducts: Product[];
+}
+
+const Header: React.FC<HeaderProps> = ({ onSearch, selectedProducts }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isCartVisible, setIsCartVisible] = useState(false);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
     onSearch(event.target.value); // Notifica al componente padre sobre el término de búsqueda
+  };
+
+  const toggleCartVisibility = () => {
+    setIsCartVisible(!isCartVisible); // Cambia la visibilidad del carrito
   };
 
   return (
@@ -17,7 +34,10 @@ const Header = ({ onSearch }) => {
         <div className="header flex items-center flex-grow justify-center">
           <ul className="flex items-center gap-12">
             <li className="list-none">
-              <a href="/" className="text-xl font-medium text-white hover:text-gray-200">
+              <a
+                href="/"
+                className="text-xl font-medium text-white hover:text-gray-200"
+              >
                 Home
               </a>
             </li>
@@ -30,7 +50,7 @@ const Header = ({ onSearch }) => {
             placeholder="Buscar"
             type="search"
             name="search"
-            className="border rounded-lg py-3 px-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border rounded-lg py-3 px-6 focus:outline-none focus:ring-2 focus:ring-blue-500 "
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -47,6 +67,29 @@ const Header = ({ onSearch }) => {
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
+        </div>
+        <div className="relative">
+          <button onClick={toggleCartVisibility} className="relative ml-4">
+            🛒
+          </button>
+          {/* Menú desplegable del carrito */}
+          {isCartVisible && (
+            <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-10">
+              <h2 className="font-bold text-lg text-black">Carrito</h2>
+              <ul>
+                {Array.isArray(selectedProducts) &&
+                selectedProducts.length > 0 ? (
+                  selectedProducts.map((product, index) => (
+                    <li key={index} className="py-2 border-b">
+                      {product.name} - {product.quantity}
+                    </li>
+                  ))
+                ) : (
+                  <li className="py-2 text-black ">El carrito está vacío</li>
+                )}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </header>
