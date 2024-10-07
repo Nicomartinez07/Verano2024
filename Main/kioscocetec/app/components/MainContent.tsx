@@ -429,6 +429,26 @@ export default function MainContent({ searchTerm = "", onAddProduct }) {
     onAddProduct(product); // Llamar al prop para actualizar los productos en el Header
   };
 
+  const handleRemoveProduct = (productToRemove) => {
+    setSelectedProducts((prevProducts) => {
+      const existingProduct = prevProducts.find(
+        (p) => p.id === productToRemove.id
+      );
+      if (existingProduct.quantity > 1) {
+        return prevProducts.map((p) =>
+          p.id === productToRemove.id ? { ...p, quantity: p.quantity - 1 } : p
+        );
+      }
+      return prevProducts.filter(
+        (product) => product.id !== productToRemove.id
+      );
+    });
+  };
+
+  const totalPrice = selectedProducts.reduce((total, product) => {
+    return total + product.price * product.quantity;
+  }, 0);
+
   return (
     <div className="bg-[#be5600]">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
