@@ -408,8 +408,7 @@ const products = [
     imageAlt: "a",
   },
 ];
-
-export default function MainContent({ searchTerm = "" }) {
+export default function MainContent({ searchTerm = "", onAddProduct }) {
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   // Filtramos los productos según el término de búsqueda
@@ -427,51 +426,12 @@ export default function MainContent({ searchTerm = "" }) {
       }
       return [...prevProducts, { ...product, quantity: 1 }];
     });
+    onAddProduct(product); // Llamar al prop para actualizar los productos en el Header
   };
-
-  const handleRemoveProduct = (productToRemove) => {
-    setSelectedProducts((prevProducts) => {
-      const existingProduct = prevProducts.find(
-        (p) => p.id === productToRemove.id
-      );
-      if (existingProduct.quantity > 1) {
-        return prevProducts.map((p) =>
-          p.id === productToRemove.id ? { ...p, quantity: p.quantity - 1 } : p
-        );
-      }
-      return prevProducts.filter(
-        (product) => product.id !== productToRemove.id
-      );
-    });
-  };
-
-  // Calcular el precio total
-  const totalPrice = selectedProducts.reduce((total, product) => {
-    return total + product.price * product.quantity; // Asegúrate de que product.price es un número
-  }, 0);
 
   return (
     <div className="bg-[#be5600]">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <div className="mt-8">
-          <h3 className="text-lg font-bold">Productos seleccionados:</h3>
-          <ul className="flex flex-col">
-            {selectedProducts.map((product) => (
-              <li
-                key={product.id}
-                onClick={() => handleRemoveProduct(product)}
-                className="cursor-pointer hover:bg-[#be5600] py-2 px-4 rounded block"
-              >
-                {product.name} - {product.price} (Cantidad: {product.quantity})
-              </li>
-            ))}
-          </ul>
-          <h4 className="mt-4 text-lg font-bold">
-            Precio total: ${totalPrice.toFixed(2)}
-          </h4>{" "}
-          {/* Mostrar el total */}
-        </div>
-        <h2 className="sr-only">Products</h2>
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {filteredProducts.map((product) => (
             <div key={product.id} className="group">
@@ -486,7 +446,7 @@ export default function MainContent({ searchTerm = "" }) {
                 <h3 className="mt-4 text-sm text-gray-900">{product.name}</h3>
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-lg font-medium text-gray-900">
-                    {product.price}
+                    ${product.price}
                   </p>
                   <button
                     onClick={() => handleAddProduct(product)}
