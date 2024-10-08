@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import Error
+from flask_cors import CORS  # Importar CORS
 
 # Configuración de la conexión
 config = {
@@ -12,6 +13,7 @@ config = {
 }
 
 app = Flask(__name__)
+CORS(app)  # Habilitar CORS en toda la aplicación
 app.config["JSON_AS_ASCII"] = False
 @app.route("/productos")
 def productos():

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 interface Product {
-  id: string;
+  id: string; // Asegúrate de que el tipo de ID coincida con el que estás utilizando
   name: string;
   price: number;
   quantity: number;
@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isCartVisible, setIsCartVisible] = useState(false);
 
   const totalPrice = selectedProducts.reduce((total, product) => {
-    return total + product.price * product.quantity;
+    return total + product.price * product.quantity; // Usa 'price' para calcular el total
   }, 0);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({
             onChange={handleSearch}
             placeholder="Buscar"
             type="search"
-            className="border rounded-lg py-3 px-6"
+            className="border rounded-lg py-3 px-6 text-black"
           />
         </div>
 
@@ -67,13 +67,9 @@ const Header: React.FC<HeaderProps> = ({
               <ul className="flex flex-col text-black">
                 {selectedProducts.length > 0 ? (
                   selectedProducts.map((product) => (
-                    <li
-                      key={product.id}
-                      className="flex justify-between items-center"
-                    >
+                    <li key={product.Id} className="flex justify-between items-center">
                       <span>
-                        {product.name} - ${product.price} (Cantidad:{" "}
-                        {product.quantity})
+                        {product.Nombre} - ${product.Precio_venta} (Cantidad: {product.quantity})
                       </span>
                       <button
                         onClick={() => handleRemoveProduct(product)}
