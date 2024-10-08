@@ -43,16 +43,21 @@ export default function MainContent({
 
   const handleAddProduct = (product: Product) => {
     setSelectedProducts((prevProducts) => {
-      const existingProduct = prevProducts.find((p) => p.Id === product.Id);
+      const existingProduct = prevProducts.find((p) => p.id === product.id); // Usa 'id' en lugar de 'Id'
+  
       if (existingProduct) {
         // Si el producto ya existe, no lo agregamos de nuevo
-        return prevProducts; 
+        return prevProducts.map((p) =>
+          p.id === product.d ? { ...p, quantity: p.quantity + 1 } : p
+        );
       }
       // Si no existe, agregamos el nuevo producto con cantidad 1
       return [...prevProducts, { ...product, quantity: 1 }];
     });
     onAddProduct(product);
   };
+
+  
   
   return (
     <div className="bg-[#be5600]">
@@ -96,3 +101,4 @@ export default function MainContent({
     </div>
   );
 }
+
