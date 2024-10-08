@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isCartVisible, setIsCartVisible] = useState(false);
 
   const totalPrice = selectedProducts.reduce((total, product) => {
-    return total + product.price * product.quantity; // Usa 'price' para calcular el total
+    return total + product.Precio_compra * product.quantity; // Usa 'price' para calcular el total
   }, 0);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
