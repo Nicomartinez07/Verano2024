@@ -85,6 +85,29 @@ def categorias():
     db.close()
     return jsonify(result)
 
+@app.route("/usuarios")
+def usuarios():
+        # Conexión a la base de datos
+    db = mysql.connector.connect(**config)
+
+    # Crear un cursor
+    cursor = db.cursor(dictionary=True)
+
+    # Establecer el método para obtener resultados como diccionarios
+    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+
+    # Consulta
+    query = "SELECT * FROM Usuario"
+    cursor.execute(query)
+
+    # Convertir objeto cursor a lista de diccionarios
+    result = cursor.fetchall()
+
+    # Cerrar cursor y conexión
+    cursor.close()
+    db.close()
+    return jsonify(result)
+
 @app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
     try:
@@ -196,6 +219,3 @@ def insertar_producto():
     finally:
         if db.is_connected():
             db.close()
-
-
-
