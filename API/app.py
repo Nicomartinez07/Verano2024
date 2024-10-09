@@ -154,6 +154,29 @@ def estados():
     db.close()
     return jsonify(result)
 
+@app.route("/reserva")
+def reserva():
+        # Conexión a la base de datos
+    db = mysql.connector.connect(**config)
+
+    # Crear un cursor
+    cursor = db.cursor(dictionary=True)
+
+    # Establecer el método para obtener resultados como diccionarios
+    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+
+    # Consulta
+    query = "SELECT * FROM Reserva"
+    cursor.execute(query)
+
+    # Convertir objeto cursor a lista de diccionarios
+    result = cursor.fetchall()
+
+    # Cerrar cursor y conexión
+    cursor.close()
+    db.close()
+    return jsonify(result)
+
 @app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
     try:
