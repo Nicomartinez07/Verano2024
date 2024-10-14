@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-[#be5600] py-6 w-full z-20">
+    <header className="fixed top-0 left-0 w-full bg-[#be5600] py-4 z-30">
       <div className="flex items-center justify-between px-8">
         <a href="/" className="flex items-center">
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>

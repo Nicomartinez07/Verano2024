@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #be5600;
+    --background: #ffffff;
     --foreground: #ededed;
   }
 }
@@ -25,4 +25,3 @@ body {
     text-wrap: balance;
   }
 }
-

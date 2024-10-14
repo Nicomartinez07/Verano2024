@@ -1,40 +1,75 @@
 .main-content {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(400px, 1fr)); /* Tres columnas más anchas */
-    gap: 20px;
-    padding: 20px;
-    /* No limitar la altura */
-    width: 100%; /* Asegura que la grilla ocupe todo el ancho */
-  }
-  
-  .product-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 15px; /* Aumentar el padding */
-    text-align: center;
-  }
-  
-  .product-item img {
-    width: 200px; /* Imagen más grande */
-    height: 200px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .product-item p {
-    margin-top: 10px;
-    font-size: 16px; /* Texto más grande */
-    color: #333;
-  }
-  
-  /* Asegúrate de que el cuerpo de la página tenga desplazamiento habilitado */
-  body {
-    margin: 0;
-    padding: 0;
-    overflow-y: auto; /* Habilitar el scroll de la página */
-    box-sizing: border-box;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    minmax(400px, 1fr)
+  ); /* Tres columnas más anchas */
+  gap: 20px;
+  padding: 20px;
+  /* No limitar la altura */
+  width: 100%; /* Asegura que la grilla ocupe todo el ancho */
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px; /* Aumentar el padding */
+  text-align: center;
+}
+
+.product-item img {
+  width: 200px; /* Imagen más grande */
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.product-item p {
+  margin-top: 10px;
+  font-size: 16px; /* Texto más grande */
+  color: #333;
+}
+
+/* Asegúrate de que el cuerpo de la página tenga desplazamiento habilitado */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: auto; /* Habilitar el scroll de la página */
+  box-sizing: border-box;
+}
+
+/* MainContent.css */
+.group {
+  position: relative; /* Necesario para posicionar el borde interno */
+}
+
+.group::before {
+  content: ""; /* Necesario para crear el pseudo-elemento */
+  position: absolute; /* Posicionamiento absoluto para el borde externo */
+  top: -4px; /* Desplazamos hacia arriba para el borde externo */
+  left: -4px; /* Desplazamos hacia la izquierda para el borde externo */
+  right: -4px; /* Desplazamos hacia la derecha para el borde externo */
+  bottom: -4px; /* Desplazamos hacia abajo para el borde externo */
+  border: 4px solid grey; /* Borde externo más grueso */
+  border-radius: 0.5rem; /* Mantiene las esquinas redondeadas */
+  opacity: 0; /* Comienza invisible */
+  transition: opacity 0.3s; /* Transición suave para el borde externo */
+}
+
+.group:hover::before {
+  opacity: 1; /* Muestra el borde externo al pasar el mouse */
+}
+
+.group:hover {
+  border: 2px solid transparent; /* Borde interno más delgado y transparente */
+  border-radius: 0.5rem; /* Para que el borde interno siga la forma del producto */
+}
+
+/* MainContent.css */
+button {
+  position: relative; /* Asegúrate de que el botón no esté siendo cubierto */
+  z-index: 10; /* Aumenta el índice Z si es necesario */
+}

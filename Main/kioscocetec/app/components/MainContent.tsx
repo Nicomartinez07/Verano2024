@@ -41,7 +41,7 @@ export default function MainContent({
   );
 
   return (
-    <div className="bg-[#be5600]">
+    <div className="bg-[#ffffff]">
       {isLoading ? (
         <div className="spinner">Cargando...</div>
       ) : (
@@ -50,7 +50,7 @@ export default function MainContent({
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div key={product.Id} className="group">
-                  <div className="block">
+                  <div className="block ">
                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                       <img
                         alt={product.Nombre}
