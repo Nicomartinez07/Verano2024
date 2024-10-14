@@ -25,9 +25,9 @@ const Header: React.FC<HeaderProps> = ({
     return total + product.Precio_venta * product.quantity; // Usa 'price' para calcular el total
   }, 0);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    onSearch(event.target.value);
+    onSearch(event.target.value); // Notifica al componente padre sobre el término de búsqueda
   };
 
   const toggleCartVisibility = () => {
@@ -52,7 +52,8 @@ const Header: React.FC<HeaderProps> = ({
             onChange={handleSearch}
             placeholder="Buscar"
             type="search"
-            className="border rounded-lg py-3 px-6 text-black"
+            name="search"
+            className="border rounded-lg py-3 px-6 text-black placeholder:text-black"
           />
         </div>
 

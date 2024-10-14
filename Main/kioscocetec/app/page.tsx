@@ -48,11 +48,12 @@ const App = () => {
   return (
     <div>
       <Header
-        onSearch={handleSearch}
+        onSearch={setSearchTerm}
         selectedProducts={selectedProducts}
         handleRemoveProduct={handleRemoveProduct} // Pasamos la función de eliminar una unidad
       />
       <MainContent searchTerm={searchTerm} onAddProduct={handleAddProduct} />
+
       <Footer />
     </div>
   );

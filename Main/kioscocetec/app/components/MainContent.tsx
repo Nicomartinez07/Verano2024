@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; // Asegúrate de que estas importaciones estén aquí
 import "./MainContent.css";
 
 // Definimos la interfaz 'Product' que describe la estructura de un producto
@@ -12,9 +12,13 @@ interface Product {
 // Definimos las propiedades del componente 'MainContent'.
 interface MainContentProps {
   onAddProduct: (product: Product) => void;
+  searchTerm: string; // Agregamos searchTerm a las props
 }
 
-export default function MainContent({ onAddProduct }: MainContentProps) {
+export default function MainContent({
+  onAddProduct,
+  searchTerm,
+}: MainContentProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,7 +26,6 @@ export default function MainContent({ onAddProduct }: MainContentProps) {
     fetch("http://127.0.0.1:5000/productos")
       .then((response) => response.json())
       .then((data: Product[]) => {
-        console.log(data); // Verificar qué datos recibimos
         setProducts(data);
         setIsLoading(false);
       })
@@ -32,12 +35,10 @@ export default function MainContent({ onAddProduct }: MainContentProps) {
       });
   }, []);
 
-  // Mostrar todos los productos para pruebas
-  const filteredProducts = products;
-
-  const handleAddProduct = (product: Product) => {
-    onAddProduct(product);
-  };
+  // Filtrar productos usando el término de búsqueda
+  const filteredProducts = products.filter((product) =>
+    product.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="bg-[#be5600]">
@@ -46,13 +47,13 @@ export default function MainContent({ onAddProduct }: MainContentProps) {
       ) : (
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-            {filteredProducts.length > 0 ? ( // Verificamos si hay productos
+            {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <div key={product.Id} className="group">
                   <div className="block">
                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                       <img
-                        alt={product.imageAlt}
+                        alt={product.Nombre}
                         src={product.Img}
                         className="h-full w-full object-cover object-center group-hover:opacity-75"
                       />
@@ -65,10 +66,10 @@ export default function MainContent({ onAddProduct }: MainContentProps) {
                         ${product.Precio_venta}
                       </p>
                       <button
-                        onClick={() => handleAddProduct(product)}
+                        onClick={() => onAddProduct(product)}
                         className="ml-2 text-sm rounded-md bg-blue-500 text-white py-1 px-2 hover:bg-blue-600"
                       >
-                        Añadir
+                        Comprar
                       </button>
                     </div>
                   </div>
