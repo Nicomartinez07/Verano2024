@@ -18,10 +18,10 @@ const App = () => {
   // Manejar la adición de productos al carrito
   const handleAddProduct = (product) => {
     setSelectedProducts((prev) => {
-      const existingProduct = prev.find((p) => p.id === product.id);
+      const existingProduct = prev.find((p) => p.Id === product.Id);
       if (existingProduct) {
         return prev.map((p) =>
-          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+          p.Id === product.Id ? { ...p, quantity: p.quantity + 1 } : p
         );
       }
       return [...prev, { ...product, quantity: 1 }];
@@ -31,16 +31,16 @@ const App = () => {
   // Manejar la eliminación de una unidad de un producto del carrito
   const handleRemoveProduct = (productToRemove) => {
     setSelectedProducts((prev) => {
-      const existingProduct = prev.find((p) => p.id === productToRemove.id);
+      const existingProduct = prev.find((p) => p.Id === productToRemove.Id);
 
       if (existingProduct && existingProduct.quantity > 1) {
         // Si hay más de una unidad, reducimos la cantidad
         return prev.map((p) =>
-          p.id === productToRemove.id ? { ...p, quantity: p.quantity - 1 } : p
+          p.Id === productToRemove.Id ? { ...p, quantity: p.quantity - 1 } : p
         );
       } else {
         // Si solo hay una unidad, eliminamos el producto
-        return prev.filter((product) => product.id !== productToRemove.id);
+        return prev.filter((product) => product.Id !== productToRemove.Id);
       }
     });
   };
@@ -52,10 +52,7 @@ const App = () => {
         selectedProducts={selectedProducts}
         handleRemoveProduct={handleRemoveProduct} // Pasamos la función de eliminar una unidad
       />
-      <MainContent
-        searchTerm={searchTerm}
-        onAddProduct={handleAddProduct}
-      />
+      <MainContent searchTerm={searchTerm} onAddProduct={handleAddProduct} />
       <Footer />
     </div>
   );

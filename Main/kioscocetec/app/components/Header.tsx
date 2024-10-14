@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 interface Product {
-  id: string; // Asegúrate de que el tipo de ID coincida con el que estás utilizando
-  name: string;
-  price: number;
+  Id: string; // Asegúrate de que el tipo de ID coincida con el que estás utilizando
+  Nombre: string;
+  Precio_venta: number;
   quantity: number;
 }
 
@@ -33,10 +33,9 @@ const Header: React.FC<HeaderProps> = ({
   const toggleCartVisibility = () => {
     setIsCartVisible(!isCartVisible);
   };
-  
 
   return (
-    <header className="bg-[#be5600] py-6 w-full">
+    <header className="fixed top-0 left-0 w-full bg-[#be5600] py-6 w-full z-20">
       <div className="flex items-center justify-between px-8">
         <a href="/" className="flex items-center">
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
@@ -58,7 +57,10 @@ const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="relative">
-          <button onClick={toggleCartVisibility} className="relative ml-4">
+          <button
+            onClick={toggleCartVisibility}
+            className="relative ml-4 text-3xl p-2 bg-[#be5600] rounded-lg hover:bg-gray-100 transition duration-200"
+          >
             🛒
           </button>
 
@@ -66,24 +68,30 @@ const Header: React.FC<HeaderProps> = ({
             <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-lg p-4 z-10">
               <h2 className="font-bold text-lg text-black">Carrito</h2>
               <ul className="flex flex-col text-black">
-              {selectedProducts.length > 0 ? (
-                selectedProducts.map((product) => (
-                  <li key={product.Id} className="flex justify-between items-center"> {/* Usa 'id' en lugar de 'Id' */}
-                    <span>
-                      {product.Nombre} - ${product.Precio_venta} (Cantidad: {product.quantity}) {/* Asegúrate de usar 'name' y 'price' */}
-                    </span>
-                    <button
-                      onClick={() => handleRemoveProduct(product)}
-                      className="ml-2 text-red-500"
+                {selectedProducts.length > 0 ? (
+                  selectedProducts.map((product) => (
+                    <li
+                      key={product.Id}
+                      className="flex justify-between items-center"
                     >
-                      Eliminar
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <li className="py-2 text-black">El carrito está vacío</li>
-              )}
-
+                      {" "}
+                      {/* Usa 'id' en lugar de 'Id' */}
+                      <span>
+                        {product.Nombre} - ${product.Precio_venta} (Cantidad:{" "}
+                        {product.quantity}){" "}
+                        {/* Asegúrate de usar 'name' y 'price' */}
+                      </span>
+                      <button
+                        onClick={() => handleRemoveProduct(product)}
+                        className="ml-2 text-red-500"
+                      >
+                        Eliminar
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="py-2 text-black">El carrito está vacío</li>
+                )}
               </ul>
               <div className="mt-4 font-bold text-lg text-black">
                 Precio total: ${totalPrice.toFixed(2)}
@@ -97,4 +105,3 @@ const Header: React.FC<HeaderProps> = ({
 };
 
 export default Header;
-

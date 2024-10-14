@@ -3,24 +3,18 @@ import "./MainContent.css";
 
 // Definimos la interfaz 'Product' que describe la estructura de un producto
 interface Product {
-  id: number;
-  name: string;
-  price: number;
-  imageSrc: string;
-  imageAlt: string;
+  Id: number;
+  Nombre: string;
+  Precio_venta: number;
+  Img: string;
 }
 
 // Definimos las propiedades del componente 'MainContent'.
 interface MainContentProps {
-  searchTerm?: string;
   onAddProduct: (product: Product) => void;
 }
 
-export default function MainContent({
-  searchTerm = "",
-  onAddProduct,
-}: MainContentProps) {
-  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
+export default function MainContent({ onAddProduct }: MainContentProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,23 +36,9 @@ export default function MainContent({
   const filteredProducts = products;
 
   const handleAddProduct = (product: Product) => {
-    setSelectedProducts((prevProducts) => {
-      const existingProduct = prevProducts.find((p) => p.id === product.id); // Usa 'id' en lugar de 'Id'
-  
-      if (existingProduct) {
-        // Si el producto ya existe, no lo agregamos de nuevo
-        return prevProducts.map((p) =>
-          p.id === product.d ? { ...p, quantity: p.quantity + 1 } : p
-        );
-      }
-      // Si no existe, agregamos el nuevo producto con cantidad 1
-      return [...prevProducts, { ...product, quantity: 1 }];
-    });
     onAddProduct(product);
   };
 
-  
-  
   return (
     <div className="bg-[#be5600]">
       {isLoading ? (
@@ -77,7 +57,9 @@ export default function MainContent({
                         className="h-full w-full object-cover object-center group-hover:opacity-75"
                       />
                     </div>
-                    <h3 className="mt-4 text-sm text-gray-900">{product.Nombre}</h3>
+                    <h3 className="mt-4 text-sm text-gray-900">
+                      {product.Nombre}
+                    </h3>
                     <div className="flex items-center justify-between mt-1">
                       <p className="text-lg font-medium text-gray-900">
                         ${product.Precio_venta}
@@ -93,7 +75,9 @@ export default function MainContent({
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-900">No hay productos disponibles.</p>
+              <p className="text-center text-gray-900">
+                No hay productos disponibles.
+              </p>
             )}
           </div>
         </div>
@@ -101,4 +85,3 @@ export default function MainContent({
     </div>
   );
 }
-

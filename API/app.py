@@ -17,8 +17,19 @@ CORS(app)  # Habilitar CORS en toda la aplicación
 app.config["JSON_AS_ASCII"] = False
 @app.route("/productos")
 def productos():
+    pagina = None
+    filtro = None
     # Conexión a la base de datos
     db = mysql.connector.connect(**config)
+
+    if 'pagina' in request.args:
+        pagina = int(request.args['pagina'])
+
+    if request.is_json:
+        if 'pagina' in request.json:
+            pagina = request.json['pagina']
+        if 'filtro' in request.json:
+            filtro = request.json['filtro']
 
     # Crear un cursor
     cursor = db.cursor(dictionary=True) 
@@ -27,8 +38,19 @@ def productos():
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
 
     # Consulta
-    query = "SELECT * FROM Productos"
-    cursor.execute(query)
+    if pagina == None and filtro == None:
+        query = "SELECT * FROM Productos"
+        cursor.execute(query)
+    elif filtro != None:
+        query = "SELECT * FROM Productos WHERE Nombre LIKE '%' || ? || '%'"
+        cursor.execute(query, (filtro,))
+    else:
+        elementos_por_pagina = 20
+        paginas_descartadas = pagina-1
+        elementos_descartados = paginas_descartadas * elementos_por_pagina
+        query = "SELECT * FROM artist LIMIT 20 OFFSET ?"
+        cursor.execute(query, (elementos_por_pagina,
+                               elementos_descartados,))
 
     result = cursor.fetchall()
 
@@ -37,7 +59,6 @@ def productos():
     cursor.close()
     db.close()
     return jsonify(result)
-
 
 @app.route("/marcas")
 def marcas():
