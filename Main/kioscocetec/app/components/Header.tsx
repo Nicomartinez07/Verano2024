@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import MercadoButtonComponent from "./BotonMercado";
 
 interface Product {
-  Id: string; // Asegúrate de que el tipo de ID coincida con el que estás utilizando
+  Id: string;
   Nombre: string;
   Precio_venta: number;
   quantity: number;
@@ -20,18 +21,29 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCartVisible, setIsCartVisible] = useState(false);
+  const [cartAnimation, setCartAnimation] = useState(false); // Nuevo estado para animación
+
+  const totalQuantity = selectedProducts.reduce((total, product) => {
+    return total + product.quantity;
+  }, 0);
 
   const totalPrice = selectedProducts.reduce((total, product) => {
-    return total + product.Precio_venta * product.quantity; // Usa 'price' para calcular el total
+    return total + product.Precio_venta * product.quantity;
   }, 0);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    onSearch(event.target.value); // Notifica al componente padre sobre el término de búsqueda
+    onSearch(event.target.value);
   };
 
   const toggleCartVisibility = () => {
     setIsCartVisible(!isCartVisible);
+  };
+
+  const handleAddProduct = () => {
+    setCartAnimation(true);
+    // Restablece la animación después de un corto tiempo
+    setTimeout(() => setCartAnimation(false), 300);
   };
 
   return (
@@ -40,11 +52,6 @@ const Header: React.FC<HeaderProps> = ({
         <a href="/" className="flex items-center">
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
         </a>
-        <div className="flex items-center gap-12">
-          <a href="/" className="text-xl font-medium text-white">
-            Home
-          </a>
-        </div>
 
         <div className="relative flex items-center">
           <input
@@ -60,9 +67,16 @@ const Header: React.FC<HeaderProps> = ({
         <div className="relative">
           <button
             onClick={toggleCartVisibility}
-            className="relative ml-4 text-3xl p-2 bg-[#be5600] rounded-lg hover:bg-gray-100 transition duration-200"
+            className={`relative ml-4 text-3xl p-2 bg-[#be5600] rounded-lg hover:bg-gray-100 transition duration-200 ${
+              cartAnimation ? "cart-animation" : ""
+            }`}
           >
             🛒
+            {totalQuantity > 0 && (
+              <span className="absolute top-0 right-0 transform translate-x-1 -translate-y-1 bg-red-500 text-white text-xs rounded-full px-1">
+                {totalQuantity}
+              </span>
+            )}
           </button>
 
           {isCartVisible && (
@@ -75,12 +89,9 @@ const Header: React.FC<HeaderProps> = ({
                       key={product.Id}
                       className="flex justify-between items-center"
                     >
-                      {" "}
-                      {/* Usa 'id' en lugar de 'Id' */}
                       <span>
                         {product.Nombre} - ${product.Precio_venta} (Cantidad:{" "}
-                        {product.quantity}){" "}
-                        {/* Asegúrate de usar 'name' y 'price' */}
+                        {product.quantity})
                       </span>
                       <button
                         onClick={() => handleRemoveProduct(product)}
@@ -96,6 +107,9 @@ const Header: React.FC<HeaderProps> = ({
               </ul>
               <div className="mt-4 font-bold text-lg text-black">
                 Precio total: ${totalPrice.toFixed(2)}
+              </div>
+              <div>
+                <MercadoButtonComponent />
               </div>
             </div>
           )}
