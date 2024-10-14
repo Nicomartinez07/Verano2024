@@ -109,7 +109,7 @@ const Header: React.FC<HeaderProps> = ({
                 Precio total: ${totalPrice.toFixed(2)}
               </div>
               <div>
-                <MercadoButtonComponent />
+                <MercadoButtonComponent price={totalPrice} />
               </div>
             </div>
           )}

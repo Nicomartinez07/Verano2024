@@ -5,7 +5,7 @@ import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
 initMercadoPago("TEST-5aae9b6b-9d5e-4982-8735-e3e96c4b7d60");
 
-const MercadoButtonComponent = () => {
+const MercadoButtonComponent = ({ price }) => {
   const [preferenceId, setPreferenceId] = useState(null);
   const onReady = async () => {
     /*
@@ -47,7 +47,7 @@ const MercadoButtonComponent = () => {
                   description: "100 Tokens", // Optional: Replace with your item description
                   quantity: 1, // Replace with the item quantity
                   currency_id: "ARS", // Replace with the appropriate currency code
-                  unit_price: 700, // Replace with the unit price
+                  unit_price: price, // Replace with the unit price
                 },
               ],
             }),
@@ -63,7 +63,7 @@ const MercadoButtonComponent = () => {
     };
 
     createPreference();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, [price]); // Empty dependency array ensures this runs once on mount
 
   return (
     <div className="App">
