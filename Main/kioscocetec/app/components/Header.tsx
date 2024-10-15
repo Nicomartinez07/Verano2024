@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 
 interface Product {
@@ -19,9 +19,11 @@ const Header: React.FC<HeaderProps> = ({
   selectedProducts,
   handleRemoveProduct,
 }) => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const [cartAnimation, setCartAnimation] = useState(false); // Nuevo estado para animación
+  const [cartAnimation, setCartAnimation] = useState(false);
 
   const totalQuantity = selectedProducts.reduce((total, product) => {
     return total + product.quantity;
@@ -31,9 +33,42 @@ const Header: React.FC<HeaderProps> = ({
     return total + product.Precio_venta * product.quantity;
   }, 0);
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    onSearch(event.target.value);
+  useEffect(() => {
+    // Cargar todos los productos al inicio
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/products"); // Cambia la URL según tu API
+        const data = await response.json();
+        setProducts(data);
+        setSearchResults(data); // Inicialmente, muestra todos los productos
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+    //CORREGIR ESTO
+    if (term.length > 3) {
+      try {
+        
+        const response = await fetch(`http://127.0.0.1:5000/search?term=${term}`);
+        const data = await response.json();
+        onSearch(term);
+        setSearchResults(data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    } else {
+      const response = await fetch(`http://127.0.0.1:5000/search?term=$`);
+      const data = await response.json();
+      onSearch(term);
+      setSearchResults(data);
+    }
   };
 
   const toggleCartVisibility = () => {
@@ -42,7 +77,6 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleAddProduct = () => {
     setCartAnimation(true);
-    // Restablece la animación después de un corto tiempo
     setTimeout(() => setCartAnimation(false), 300);
   };
 
@@ -62,6 +96,15 @@ const Header: React.FC<HeaderProps> = ({
             name="search"
             className="border rounded-lg py-3 px-6 text-black placeholder:text-black"
           />
+          {searchResults.length > 0 && (
+            <ul className="absolute top-full left-0 w-full bg-white shadow-lg z-10">
+              {searchResults.map((product) => (
+                <li key={product.Id} className="px-4 py-2 border-b">
+                  {product.Nombre} - ${product.Precio_venta}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="relative">

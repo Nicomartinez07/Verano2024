@@ -200,6 +200,7 @@ def reserva():
 
 @app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
+
     try:
         # Conexión a la base de datos
         db = mysql.connector.connect(**config)
@@ -256,8 +257,6 @@ def detalle_producto(id):
     finally:
         if db.is_connected():
             db.close()
-
-
 #Put
 @app.route("/producto", methods=('PUT',))
 def insertar_producto():
@@ -309,3 +308,36 @@ def insertar_producto():
     finally:
         if db.is_connected():
             db.close()
+
+@app.route("/search", methods=["GET"])
+def search():
+    try:
+        # Conexión a la base de datos
+        db = mysql.connector.connect(**config)
+        
+        if db.is_connected():
+            # Obtener el término de búsqueda desde los parámetros de la URL
+            term = request.args.get('term', '')
+
+            # Crear un cursor
+            cursor = db.cursor(dictionary=True)
+            cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+
+            # Consulta SQL utilizando LIKE para buscar productos que coincidan parcialmente con el nombre
+            query = "SELECT Id, Nombre, Precio_venta FROM Productos WHERE Nombre LIKE %s"
+            cursor.execute(query, (f"%{term}%",))
+
+            # Obtener los resultados
+            results = cursor.fetchall()
+
+            cursor.close()
+            return jsonify(results), 200
+
+    except mysql.connector.Error as e:
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if db.is_connected():
+            db.close()
+
+
