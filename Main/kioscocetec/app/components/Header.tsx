@@ -19,11 +19,12 @@ const Header: React.FC<HeaderProps> = ({
   selectedProducts,
   handleRemoveProduct,
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [cartAnimation, setCartAnimation] = useState(false);
+  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
 
   const totalQuantity = selectedProducts.reduce((total, product) => {
     return total + product.quantity;
@@ -33,41 +34,26 @@ const Header: React.FC<HeaderProps> = ({
     return total + product.Precio_venta * product.quantity;
   }, 0);
 
-  useEffect(() => {
-    // Cargar todos los productos al inicio
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/products"); // Cambia la URL según tu API
-        const data = await response.json();
-        setProducts(data);
-        setSearchResults(data); // Inicialmente, muestra todos los productos
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
 
-    fetchProducts();
-  }, []);
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
     setSearchTerm(term);
-    //CORREGIR ESTO
+    //CORREGIR
     if (term.length > 3) {
       try {
-        
         const response = await fetch(`http://127.0.0.1:5000/search?term=${term}`);
         const data = await response.json();
         onSearch(term);
-        setSearchResults(data);
+        
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
     } else {
-      const response = await fetch(`http://127.0.0.1:5000/search?term=$`);
+      const response = await fetch(`http://127.0.0.1:5000/productos`);
       const data = await response.json();
       onSearch(term);
-      setSearchResults(data);
+      
     }
   };
 
@@ -80,12 +66,36 @@ const Header: React.FC<HeaderProps> = ({
     setTimeout(() => setCartAnimation(false), 300);
   };
 
+  const toggleCategoriesVisibility = () => {
+    setIsCategoriesVisible(!isCategoriesVisible);
+  };
+
+  
   return (
     <header className="fixed top-0 left-0 w-full bg-[#be5600] py-4 z-30">
       <div className="flex items-center justify-between px-8">
         <a href="/" className="flex items-center">
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
         </a>
+        <div className="flex items-center gap-12">
+          <button
+            onClick={toggleCategoriesVisibility}
+            className="text-xl font-medium text-white"
+          >
+            Categorías
+          </button>
+          {isCategoriesVisible && (
+            <div className="absolute bg-white shadow-lg rounded-lg p-4 z-20" style={{ top: '60px' }}> {/* Ajusta el valor de top aquí */}
+              <ul className="flex flex-col text-black">
+                <li><a href="http://127.0.0.1:5000/categoria/1">Bebidas</a></li>
+                <li><a href="http://127.0.0.1:5000/categoria/3">Alfajores</a></li>
+                <li><a href="http://127.0.0.1:5000/categoria/4">Galletitas</a></li>
+                <li><a href="http://127.0.0.1:5000/categoria/7">Snacks</a></li>
+                <li><a href="http://127.0.0.1:5000/categoria/8">Golosinas</a></li>
+              </ul>
+            </div>
+          )}
+        </div>
 
         <div className="relative flex items-center">
           <input

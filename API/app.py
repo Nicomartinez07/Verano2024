@@ -341,3 +341,41 @@ def search():
             db.close()
 
 
+@app.route("/categoria/<int:id>", methods=('GET',))
+def productos_por_categoria(id):
+   try:
+       # Conexión a la base de datos
+       db = mysql.connector.connect(**config)
+
+
+       if db.is_connected():
+           # Crear un cursor
+           cursor = db.cursor(dictionary=True)
+           cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+
+
+           # 1. Consulta para obtener los productos de la categoría
+           query_productos = "SELECT Id, Nombre, Precio_venta, Id_categoria, Id_marca FROM Productos WHERE Id_categoria = %s"
+           cursor.execute(query_productos, (id,))
+           productos = cursor.fetchall()
+
+
+           # Si no hay productos en la categoría, devolver error 404
+           if not productos:
+               cursor.close()
+               return jsonify({"error": "No se encontraron productos para esta categoría"}), 404
+
+
+           cursor.close()
+           return jsonify(productos)
+
+
+   except mysql.connector.Error as e:
+       return jsonify({"error": str(e)}), 500
+
+
+   finally:
+       if db.is_connected():
+           db.close()
+
+
