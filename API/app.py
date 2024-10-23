@@ -206,6 +206,37 @@ def borrarEstado(id):
     resultado = { "resultado" : "ok"}
     return jsonify(resultado)
 
+@app.route("/marcas", methods=("POST",))
+def agregarEstadoNuevo():
+    # Conexión a la base de datos
+    db = mysql.connector.connect(**config)
+
+    # Crear un cursor
+    cursor = db.cursor(dictionary=True)
+    nombre = request.json["Marcas"]
+    consulta = """INSERT INTO Marcas(Marcas) VALUES (%s)"""
+
+    cursor.execute(consulta, (nombre,))
+    db.commit()
+
+    resultado = { "resultado" : "ok"}
+    return jsonify(resultado)
+
+@app.route("/marcas/<int:id>", methods=("DELETE",))
+def borrarEstado(id):
+    # Conexión a la base de datos
+    db = mysql.connector.connect(**config)
+
+    # Crear un cursor
+    cursor = db.cursor(dictionary=True)
+    consulta = """DELETE FROM Marcas WHERE Id = %s"""
+
+    cursor.execute(consulta, (id,))
+    db.commit()
+
+    resultado = { "resultado" : "ok"}
+    return jsonify(resultado)
+
 
 @app.route("/reserva")
 def reserva():
