@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import Error
 from flask_cors import CORS  # Importar CORS
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
 
 # Configuración de la conexión
 config = {
@@ -14,6 +17,8 @@ config = {
 
 app = Flask(__name__)
 CORS(app)  # Habilitar CORS en toda la aplicación
+CORS(app, resources={r"/login": {"origins": "http://localhost:3000"}})
+
 app.config["JSON_AS_ASCII"] = False
 @app.route("/productos")
 def productos():
@@ -129,82 +134,10 @@ def usuarios():
     db.close()
     return jsonify(result)
 
-@app.route("/roles")
-def roles():
-        # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
 
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
 
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
 
-    # Consulta
-    query = "SELECT * FROM Roles"
-    cursor.execute(query)
 
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
-
-@app.route("/estados")
-def estados():
-        # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Estados"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
-
-@app.route("/estados", methods=("POST",))
-def agregarEstadoNuevo():
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-    nombre = request.json["Estado"]
-    consulta = """INSERT INTO Estados(Estado) VALUES (%s)"""
-
-    cursor.execute(consulta, (nombre,))
-    db.commit()
-
-    resultado = { "resultado" : "ok"}
-    return jsonify(resultado)
-
-@app.route("/estados/<int:id>", methods=("DELETE",))
-def borrarEstado(id):
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-    consulta = """DELETE FROM Estados WHERE Id = %s"""
-
-    cursor.execute(consulta, (id,))
-    db.commit()
-
-    resultado = { "resultado" : "ok"}
-    return jsonify(resultado)
 
 @app.route("/marcas", methods=("POST",))
 def agregarMarcaNueva():
@@ -237,29 +170,6 @@ def borrarMarca(id):
     resultado = { "resultado" : "ok"}
     return jsonify(resultado)
 
-
-@app.route("/reserva")
-def reserva():
-        # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Reserva"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
 
 @app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
@@ -440,5 +350,4 @@ def productos_por_categoria(id):
    finally:
        if db.is_connected():
            db.close()
-
 

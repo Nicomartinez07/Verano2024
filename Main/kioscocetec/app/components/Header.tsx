@@ -1,76 +1,83 @@
-import React, { useState, useEffect } from "react";
-import MercadoButtonComponent from "./BotonMercado";
+import React, { useState, useEffect } from "react"; // Importamos React y hooks necesarios
+import MercadoButtonComponent from "./BotonMercado"; // Importamos el componente para el botón de Mercado
 
+// Definimos la interfaz 'Product' que describe la estructura de un producto
 interface Product {
-  Id: string;
-  Nombre: string;
-  Precio_venta: number;
-  quantity: number;
+  Id: string; // Identificador único del producto
+  Nombre: string; // Nombre del producto
+  Precio_venta: number; // Precio de venta del producto
+  quantity: number; // Cantidad del producto en el carrito
 }
 
+// Definimos las propiedades del componente 'Header'.
 interface HeaderProps {
-  onSearch: (term: string) => void;
-  selectedProducts: Product[];
-  handleRemoveProduct: (product: Product) => void;
+  onSearch: (term: string) => void; // Propiedad para manejar la búsqueda
+  selectedProducts: Product[]; // Lista de productos seleccionados
+  handleRemoveProduct: (product: Product) => void; // Propiedad para manejar la eliminación de un producto
 }
 
+// Componente funcional 'Header'
 const Header: React.FC<HeaderProps> = ({
   onSearch,
   selectedProducts,
   handleRemoveProduct,
 }) => {
   
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const [isCartVisible, setIsCartVisible] = useState(false);
-  const [cartAnimation, setCartAnimation] = useState(false);
-  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para el término de búsqueda
+  const [searchResults, setSearchResults] = useState<Product[]>([]); // Estado para los resultados de búsqueda
+  const [isCartVisible, setIsCartVisible] = useState(false); // Estado para mostrar u ocultar el carrito
+  const [cartAnimation, setCartAnimation] = useState(false); // Estado para animación del carrito
+  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false); // Estado para mostrar u ocultar categorías
 
+  // Calcula la cantidad total de productos en el carrito
   const totalQuantity = selectedProducts.reduce((total, product) => {
     return total + product.quantity;
   }, 0);
 
+  // Calcula el precio total de los productos en el carrito
   const totalPrice = selectedProducts.reduce((total, product) => {
     return total + product.Precio_venta * product.quantity;
   }, 0);
 
-
-
+  // Maneja el cambio en el campo de búsqueda
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const term = event.target.value;
-    setSearchTerm(term);
-    //CORREGIR
+    const term = event.target.value; // Obtiene el término de búsqueda
+    setSearchTerm(term); // Actualiza el estado del término de búsqueda
+    // Realiza la búsqueda si el término tiene más de 3 caracteres
     if (term.length > 3) {
       try {
         const response = await fetch(`http://127.0.0.1:5000/search?term=${term}`);
-        const data = await response.json();
-        onSearch(term);
-        
+        const data = await response.json(); // Convierte la respuesta a JSON
+        setSearchResults(data); // Actualiza los resultados de búsqueda
+        onSearch(term); // Llama a la función onSearch con el término actual
       } catch (error) {
-        console.error("Error fetching search results:", error);
+        console.error("Error fetching search results:", error); // Maneja errores de la búsqueda
       }
     } else {
+      // Si el término es corto, obtiene todos los productos
       const response = await fetch(`http://127.0.0.1:5000/productos`);
-      const data = await response.json();
-      onSearch(term);
-      
+      const data = await response.json(); // Convierte la respuesta a JSON
+      setSearchResults(data); // Actualiza los resultados de búsqueda
+      onSearch(term); // Llama a la función onSearch con el término actual
     }
   };
 
+  // Alterna la visibilidad del carrito
   const toggleCartVisibility = () => {
-    setIsCartVisible(!isCartVisible);
+    setIsCartVisible(!isCartVisible); // Cambia el estado de visibilidad del carrito
   };
 
+  // Maneja la animación al agregar un producto al carrito
   const handleAddProduct = () => {
-    setCartAnimation(true);
-    setTimeout(() => setCartAnimation(false), 300);
+    setCartAnimation(true); // Activa la animación
+    setTimeout(() => setCartAnimation(false), 300); // Desactiva la animación después de 300ms
   };
 
+  // Alterna la visibilidad de las categorías
   const toggleCategoriesVisibility = () => {
-    setIsCategoriesVisible(!isCategoriesVisible);
+    setIsCategoriesVisible(!isCategoriesVisible); // Cambia el estado de visibilidad de categorías
   };
 
-  
   return (
     <header className="fixed top-0 left-0 w-full bg-[#be5600] py-4 z-30">
       <div className="flex items-center justify-between px-8">
@@ -83,9 +90,9 @@ const Header: React.FC<HeaderProps> = ({
             className="text-xl font-medium text-white"
           >
             Categorías
-          </button>
+          </button>   
           {isCategoriesVisible && (
-            <div className="absolute bg-white shadow-lg rounded-lg p-4 z-20" style={{ top: '60px' }}> {/* Ajusta el valor de top aquí */}
+            <div className="absolute bg-white shadow-lg rounded-lg p-4 z-20" style={{ top: '60px' }}>
               <ul className="flex flex-col text-black">
                 <li><a href="http://127.0.0.1:5000/categoria/1">Bebidas</a></li>
                 <li><a href="http://127.0.0.1:5000/categoria/3">Alfajores</a></li>
@@ -172,4 +179,4 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
-export default Header;
+export default Header; // Exportamos el componente Header
