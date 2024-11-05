@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
+import LoginForm from "./LoginForm";
+import ProductForm from "./ProductForm";
 
 interface Product {
   Id: string;
@@ -21,7 +23,9 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCartVisible, setIsCartVisible] = useState(false);
-  const [cartAnimation, setCartAnimation] = useState(false); // Nuevo estado para animación
+  const [cartAnimation, setCartAnimation] = useState(false);
+  const [showLogin, setShowLogin] = useState(false); 
+  const [showProduct, setShowProduct] = useState(false); // Estado para controlar el formulario de añadir producto
 
   const totalQuantity = selectedProducts.reduce((total, product) => {
     return total + product.quantity;
@@ -42,7 +46,6 @@ const Header: React.FC<HeaderProps> = ({
 
   const handleAddProduct = () => {
     setCartAnimation(true);
-    // Restablece la animación después de un corto tiempo
     setTimeout(() => setCartAnimation(false), 300);
   };
 
@@ -52,6 +55,27 @@ const Header: React.FC<HeaderProps> = ({
         <a href="/" className="flex items-center">
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
         </a>
+
+        
+        <div>
+          <button
+            onClick={() => setShowProduct(true)}
+            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+          >
+            Añadir Producto
+          </button>
+        </div>
+        <div>
+          
+        </div>
+        <div>
+          <button
+            onClick={() => setShowLogin(true)}
+            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+          >
+            Iniciar Sesión
+          </button>
+        </div>
 
         <div className="relative flex items-center">
           <input
@@ -63,8 +87,8 @@ const Header: React.FC<HeaderProps> = ({
             className="border rounded-lg py-3 px-6 text-black placeholder:text-black"
           />
         </div>
-
-        <div className="relative">
+        
+        <div className="relative flex items-center">
           <button
             onClick={toggleCartVisibility}
             className={`relative ml-4 text-3xl p-2 bg-[#be5600] rounded-lg hover:bg-gray-100 transition duration-200 ${
@@ -115,6 +139,12 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </div>
+
+      {/* Formulario de Inicio de Sesión */}
+      {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
+
+      {/* Formulario de Añadir Producto */}
+      {showProduct && <ProductForm onClose={() => setShowProduct(false)} />}
     </header>
   );
 };
