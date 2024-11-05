@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,  render_template, redirect, url_for, flash
 import mysql.connector
 from mysql.connector import Error
 from flask_cors import CORS  # Importar CORS
+from werkzeug.security import generate_password_hash
+
 
 # Configuración de la conexión
 config = {
@@ -440,5 +442,41 @@ def productos_por_categoria(id):
    finally:
        if db.is_connected():
            db.close()
+
+@app.route("/register", methods=['POST'])
+def register():
+    data = request.get_json()  # Obtener el JSON desde la solicitud
+    Nombre = data.get('Nombre')
+    Apellido = data.get('Apellido')
+    error = None
+
+    # Verificación de campos
+    if not Nombre:
+        error = 'Se requiere Nombre.'
+    elif not Apellido:
+        error = 'Se requiere contraseña.'
+
+    if error is None:
+        try:
+            # Conecta a la base de datos
+            db = mysql.connector.connect(**config)
+            cursor = db.cursor()
+
+            # Inserta el usuario con la contraseña hasheada
+            query = "INSERT INTO Usuario (Nombre, Apellido) VALUES (%s, %s)"
+            cursor.execute(query, (Nombre, generate_password_hash(Apellido)))
+            db.commit()
+
+            cursor.close()
+            db.close()
+
+            return jsonify({"message": "Usuario registrado exitosamente"}), 201
+
+        except mysql.connector.IntegrityError:
+            return jsonify({"error": f"User {Nombre} is already registered."}), 409
+        except mysql.connector.Error as e:
+            return jsonify({"error": str(e)}), 500
+
+    return jsonify({"error": error}), 400
 
 
