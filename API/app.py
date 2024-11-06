@@ -2,12 +2,8 @@ from flask import Flask, jsonify, request,  render_template, redirect, url_for, 
 import mysql.connector
 from mysql.connector import Error
 from flask_cors import CORS  # Importar CORS
-<<<<<<< HEAD
-from werkzeug.security import generate_password_hash
-=======
 from werkzeug.security import generate_password_hash, check_password_hash
 
->>>>>>> d4d73d3c8d53d97f8faa185a3d981caf7c06c798
 
 
 # Configuración de la conexión
@@ -355,7 +351,6 @@ def productos_por_categoria(id):
        if db.is_connected():
            db.close()
 
-<<<<<<< HEAD
 @app.route("/register", methods=['POST'])
 def register():
     data = request.get_json()  # Obtener el JSON desde la solicitud
@@ -393,5 +388,3 @@ def register():
     return jsonify({"error": error}), 400
 
 
-=======
->>>>>>> d4d73d3c8d53d97f8faa185a3d981caf7c06c798
