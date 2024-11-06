@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "./MainContent.css";
 
-// Definimos la interfaz 'Product' que describe la estructura de un producto
 interface Product {
   Id: number;
   Nombre: string;
   Precio_venta: number;
   Img: string;
-  CategoriaId: number; // Asegúrate de que cada producto tiene un ID de categoría
+  CategoriaId: number;
 }
 
-// Definimos la interfaz 'Category' que describe la estructura de una categoría
 interface Category {
   Id: number;
   Nombre: string;
 }
 
-// Definimos las propiedades del componente 'MainContent'.
 interface MainContentProps {
   onAddProduct: (product: Product) => void;
   searchTerm: string;
@@ -26,53 +23,70 @@ export default function MainContent({
   onAddProduct,
   searchTerm,
 }: MainContentProps) {
-  const [productsByCategory, setProductsByCategory] = useState<Record<number, Product[]>>({});
+  const [productsByCategory, setProductsByCategory] = useState<
+    Record<number, Product[]>
+  >({});
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // Estado para la categoría seleccionada
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
+  const filteredProducts =
+    selectedCategory !== null
+      ? productsByCategory[selectedCategory] || []
+      : Object.values(productsByCategory).flat();
+
+  // Fetch categories on component mount
   useEffect(() => {
-    // Cargar categorías al montar el componente
     fetch("http://127.0.0.1:5000/categorias")
       .then((response) => response.json())
-      .then((data: Category[]) => {
-        setCategories(data);
-      })
+      .then((data: Category[]) => setCategories(data))
       .catch((error) => console.error("Error fetching categories:", error));
   }, []);
 
+  // Fetch products once categories are loaded
   useEffect(() => {
-    // Cargar productos por categoría
+    if (categories.length === 0 || Object.keys(productsByCategory).length > 0)
+      return;
+
     const fetchProducts = async () => {
+      setIsLoading(true);
       const fetchedProducts: Record<number, Product[]> = {};
+
       for (const category of categories) {
         try {
-          const response = await fetch(`http://127.0.0.1:5000/productos?categoriaId=${category.Id}`);
+          const response = await fetch(
+            `http://127.0.0.1:5000/productos?categoriaId=${category.Id}`
+          );
           const data: Product[] = await response.json();
+
+          console.log(data);
           fetchedProducts[category.Id] = data;
         } catch (error) {
-          console.error(`Error fetching products for category ${category.Id}:`, error);
+          console.error(
+            `Error fetching products for category ${category.Id}:`,
+            error
+          );
         }
       }
+
       setProductsByCategory(fetchedProducts);
       setIsLoading(false);
     };
 
-    if (categories.length > 0) {
-      fetchProducts();
-    }
+    fetchProducts();
   }, [categories]);
 
   const handleCategorySelect = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
   };
 
-  const filteredProducts = selectedCategory !== null 
-    ? productsByCategory[selectedCategory] || [] 
-    : Object.values(productsByCategory).flat();
+  const displayedProducts = filteredProducts.filter((product) => {
+    console.log(product);
+    return product.Nombre.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
-  const displayedProducts = filteredProducts.filter((product) =>
-    product.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  const arrayUnico = displayedProducts.filter(
+    (obj, index, self) => index === self.findIndex((t) => t.Id === obj.Id)
   );
 
   return (
@@ -81,7 +95,7 @@ export default function MainContent({
         <div className="spinner">Cargando...</div>
       ) : (
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          {/* Renderizado de Categorías */}
+          {/* Categories */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Categorías</h2>
             <div className="flex space-x-4 mt-4">
@@ -95,9 +109,9 @@ export default function MainContent({
               >
                 Todas
               </button>
-              {categories.map((category) => (
+              {categories.map((category, id) => (
                 <button
-                  key={category.Id}
+                  key={id}
                   onClick={() => handleCategorySelect(category.Id)}
                   className={`text-sm rounded-md ${
                     selectedCategory === category.Id
@@ -111,11 +125,11 @@ export default function MainContent({
             </div>
           </div>
 
-          {/* Renderizado de Productos */}
+          {/* Products */}
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map((product) => (
-                <div key={product.Id} className="group">
+            {arrayUnico.length > 0 ? (
+              arrayUnico.map((product, id) => (
+                <div key={id} className="group">
                   <div className="block">
                     <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                       <img
