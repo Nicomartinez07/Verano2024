@@ -52,13 +52,17 @@ export default function MainContent({
       setIsLoading(true);
       const fetchedProducts: Record<number, Product[]> = {};
 
+      console.log("Categorias:");
+      console.log(categories);
+      console.log("Productos por categoria:");
       for (const category of categories) {
         try {
           const response = await fetch(
-            `http://127.0.0.1:5000/productos?categoriaId=${category.Id}`
+            `http://127.0.0.1:5000/categoria/${category.Id}`
           );
           const data: Product[] = await response.json();
 
+          console.log(category.Nombre);
           console.log(data);
           fetchedProducts[category.Id] = data;
         } catch (error) {
@@ -69,6 +73,8 @@ export default function MainContent({
         }
       }
 
+      console.log("Productos por categoria final");
+      console.log(fetchedProducts);
       setProductsByCategory(fetchedProducts);
       setIsLoading(false);
     };
@@ -81,7 +87,9 @@ export default function MainContent({
   };
 
   const displayedProducts = filteredProducts.filter((product) => {
-    console.log(product);
+    // console.log("Filtro:");
+    // console.log(searchTerm.toLocaleLowerCase());
+    // console.log(product);
     return product.Nombre.toLowerCase().includes(searchTerm.toLowerCase());
   });
 

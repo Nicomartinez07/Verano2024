@@ -328,7 +328,7 @@ def productos_por_categoria(id):
 
 
            # 1. Consulta para obtener los productos de la categoría
-           query_productos = "SELECT Id, Nombre, Precio_venta, Id_categoria, Id_marca FROM Productos WHERE Id_categoria = %s"
+           query_productos = "SELECT Cantidad_gramos, Id_categoria, Id, Id_marca, Img, Nombre, Precio_Compra, Precio_venta, Stock  FROM Productos WHERE Id_categoria = %s"
            cursor.execute(query_productos, (id,))
            productos = cursor.fetchall()
 
