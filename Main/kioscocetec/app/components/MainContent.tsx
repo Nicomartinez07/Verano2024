@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MainContent.css";
+import ProductForm from "./ProductForm";
 
 interface Product {
   Id: number;
@@ -29,7 +30,13 @@ export default function MainContent({
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [products, setProducts] = useState<Product[]>([]); // Estado para almacenar los productos
+  const [showProductForm, setShowProductForm] = useState(false); // Estado para mostrar el formulario
 
+  const handleAddProduct = (newProduct: Product) => {
+    setProducts((prevProducts) => [...prevProducts, newProduct]); // Agregar el nuevo producto al estado
+    setShowProductForm(false); // Cerrar el formulario después de agregar el producto
+  };
   const filteredProducts =
     selectedCategory !== null
       ? productsByCategory[selectedCategory] || []
@@ -86,12 +93,14 @@ export default function MainContent({
     setSelectedCategory(categoryId);
   };
 
-  const displayedProducts = filteredProducts.filter((product) => {
-    // console.log("Filtro:");
-    // console.log(searchTerm.toLocaleLowerCase());
-    // console.log(product);
-    return product.Nombre.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const displayedProducts = [...filteredProducts, ...products].filter(
+    (product) => {
+      // console.log("Filtro:");
+      // console.log(searchTerm.toLocaleLowerCase());
+      // console.log(product);
+      return product.Nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+  );
 
   const arrayUnico = displayedProducts.filter(
     (obj, index, self) => index === self.findIndex((t) => t.Id === obj.Id)
@@ -132,7 +141,21 @@ export default function MainContent({
               ))}
             </div>
           </div>
+          {/* Botón para abrir el formulario de agregar producto */}
+          <button
+            onClick={() => setShowProductForm(true)}
+            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+          >
+            Añadir Producto
+          </button>
 
+          {/* Mostrar el formulario para agregar un producto */}
+          {showProductForm && (
+            <ProductForm
+              onClose={() => setShowProductForm(false)}
+              onAddProduct={handleAddProduct}
+            />
+          )}
           {/* Products */}
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
             {arrayUnico.length > 0 ? (
