@@ -21,21 +21,18 @@ CORS(app, resources={r"/login": {"origins": "http://localhost:3000"}})
 
 app.config["JSON_AS_ASCII"] = False
 @app.route("/productos")
-def productos():
-    pagina = None
-    filtro = None
+def paginado():
+    Paginado = None
     # Conexión a la base de datos
     db = mysql.connector.connect(**config)
 
-    if 'pagina' in request.args:
-        pagina = int(request.args['pagina'])
+    if 'Paginado' in request.args: #Si 'Paginado' esta en los argumentos de la respuesta
+        pagina = int(request.args['Paginado']) #Convierte a int el numero de pagina
 
     if request.is_json:
-        if 'pagina' in request.json:
-            pagina = request.json['pagina']
-        if 'filtro' in request.json:
-            filtro = request.json['filtro']
-
+        if 'Paginado' in request.json:
+            pagina = request.json['Paginado']
+        
     # Crear un cursor
     cursor = db.cursor(dictionary=True) 
 
@@ -43,19 +40,17 @@ def productos():
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
 
     # Consulta
-    if pagina == None and filtro == None:
+    if Paginado == None: #Si pagina esta vacia
         query = "SELECT * FROM Productos"
         cursor.execute(query)
-    elif filtro != None:
-        query = "SELECT * FROM Productos WHERE Nombre LIKE '%' || ? || '%'"
-        cursor.execute(query, (filtro,))
     else:
-        elementos_por_pagina = 20
-        paginas_descartadas = pagina-1
+        elementos_por_pagina = 8
+        paginas_descartadas = Paginado-1
         elementos_descartados = paginas_descartadas * elementos_por_pagina
-        query = "SELECT * FROM artist LIMIT 20 OFFSET ?"
+        query = "SELECT * FROM Productos LIMIT (%s) OFFSET (%s)"
         cursor.execute(query, (elementos_por_pagina,
                                elementos_descartados,))
+        #Por lo que entiendo se hace un calculo y se le pasa los valores a la consulta de SQL
 
     result = cursor.fetchall()
 
@@ -65,115 +60,22 @@ def productos():
     db.close()
     return jsonify(result)
 
-@app.route("/marcas")
-def marcas():
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Marcas"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
 
 @app.route("/categorias")
 def categorias():
-    # Conexión a la base de datos
     db = mysql.connector.connect(**config)
-
-    # Crear un cursor
     cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
     cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
     query = "SELECT * FROM Categorias"
     cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
     result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
     cursor.close()
     db.close()
     return jsonify(result)
 
-@app.route("/usuarios")
-def usuarios():
-        # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-
-    # Establecer el método para obtener resultados como diccionarios
-    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-    # Consulta
-    query = "SELECT * FROM Usuario"
-    cursor.execute(query)
-
-    # Convertir objeto cursor a lista de diccionarios
-    result = cursor.fetchall()
-
-    # Cerrar cursor y conexión
-    cursor.close()
-    db.close()
-    return jsonify(result)
-
-
-
-
-
-
-@app.route("/marcas", methods=("POST",))
-def agregarMarcaNueva():
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-    nombre = request.json["Nombre"]
-    consulta = """INSERT INTO Marcas(Nombre) VALUES (%s)"""
-
-    cursor.execute(consulta, (nombre,))
-    db.commit()
-
-    resultado = { "resultado" : "ok"}
-    return jsonify(resultado)
-
-@app.route("/marcas/<int:id>", methods=("DELETE",))
-def borrarMarca(id):
-    # Conexión a la base de datos
-    db = mysql.connector.connect(**config)
-
-    # Crear un cursor
-    cursor = db.cursor(dictionary=True)
-    consulta = """DELETE FROM Marcas WHERE Id = %s"""
-
-    cursor.execute(consulta, (id,))
-    db.commit()
-
-    resultado = { "resultado" : "ok"}
-    return jsonify(resultado)
-
-
+#DELETE DE PRODUCTO
 @app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
 def detalle_producto(id):
-
     try:
         # Conexión a la base de datos
         db = mysql.connector.connect(**config)
@@ -230,161 +132,103 @@ def detalle_producto(id):
     finally:
         if db.is_connected():
             db.close()
-#Put
-@app.route("/producto", methods=('PUT',))
+
+
+#PARA INSERTAR PRODUCTO FALTA DISEÑAR
+@app.route("/AñadirProducto", methods=('PUT',))
 def insertar_producto():
     try:
         # Conexión a la base de datos
         db = mysql.connector.connect(**config)
-        
         if db.is_connected():
             # Crear un cursor
             cursor = db.cursor()
             data = request.get_json()
-
             # Validar que todos los campos necesarios estén presentes en el JSON
-            required_fields = ['Nombre', 'Img', 'Precio_compra', 'Precio_venta', 'Stock', 'Cantidad_Gramos', 'Id_categoria', 'Id_marca']
+            required_fields = ['Nombre', 'Img', 'Precio_venta', 'Id_categoria', 'Id_marca']
             if not all(field in data for field in required_fields):
                 return jsonify({"error": "Faltan campos obligatorios"}), 400
-
             # Extraer los datos del producto
             nombre = data['Nombre']
             img = data['Img']
-            precio_compra = data['Precio_compra']
             precio_venta = data['Precio_venta']
-            stock = data['Stock']
-            cantidad_gramos = data['Cantidad_Gramos']
             id_categoria = data['Id_categoria']
             id_marca = data['Id_marca']
-
             # Consulta SQL para insertar el producto
             query_insertar = """
-                INSERT INTO Productos (Id_marca, Id_categoria, Nombre, Img, Precio_compra, Precio_venta, Stock, Cantidad_Gramos)
+                INSERT INTO Productos (Id_marca, Id_categoria, Nombre, Img, Precio_venta)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query_insertar, (id_marca, id_categoria, nombre, img, precio_compra, precio_venta, stock, cantidad_gramos))
+            cursor.execute(query_insertar, (id_marca, id_categoria, nombre, img, precio_venta,))
             db.commit()
-
             # Confirmar que el producto se insertó correctamente
             if cursor.rowcount == 1:
                 # Obtener el ID del producto recién insertado
                 id_producto = cursor.lastrowid
                 cursor.close()
-                return jsonify({"message": "Producto insertado correctamente", "Id": id_producto}), 201
+                return jsonify({"message": "Producto insertado correctamente", "Nombre": nombre}), 201
             else:
                 cursor.close()
                 return jsonify({"error": "Error al insertar el producto"}), 500
 
     except mysql.connector.Error as e:
         return jsonify({"error": str(e)}), 500
-    
     finally:
         if db.is_connected():
             db.close()
 
+
+#PARA BUSCAR PRODUCTO
 @app.route("/search", methods=["GET"])
 def search():
     try:
         # Conexión a la base de datos
         db = mysql.connector.connect(**config)
-        
         if db.is_connected():
             # Obtener el término de búsqueda desde los parámetros de la URL
             term = request.args.get('term', '')
-
             # Crear un cursor
             cursor = db.cursor(dictionary=True)
             cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
             # Consulta SQL utilizando LIKE para buscar productos que coincidan parcialmente con el nombre
             query = "SELECT Id, Nombre, Precio_venta FROM Productos WHERE Nombre LIKE %s"
             cursor.execute(query, (f"%{term}%",))
-
             # Obtener los resultados
             results = cursor.fetchall()
-
             cursor.close()
             return jsonify(results), 200
-
     except mysql.connector.Error as e:
         return jsonify({"error": str(e)}), 500
-
     finally:
         if db.is_connected():
             db.close()
 
 
+#FILTRAR PRODUCTOS POR CATEGORIA
 @app.route("/categoria/<int:id>", methods=('GET',))
 def productos_por_categoria(id):
    try:
        # Conexión a la base de datos
        db = mysql.connector.connect(**config)
-
-
        if db.is_connected():
            # Crear un cursor
            cursor = db.cursor(dictionary=True)
            cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-
            # 1. Consulta para obtener los productos de la categoría
            query_productos = "SELECT Cantidad_gramos, Id_categoria, Id, Id_marca, Img, Nombre, Precio_Compra, Precio_venta, Stock  FROM Productos WHERE Id_categoria = %s"
            cursor.execute(query_productos, (id,))
            productos = cursor.fetchall()
-
-
            # Si no hay productos en la categoría, devolver error 404
            if not productos:
                cursor.close()
                return jsonify({"error": "No se encontraron productos para esta categoría"}), 404
-
-
            cursor.close()
            return jsonify(productos)
-
-
    except mysql.connector.Error as e:
        return jsonify({"error": str(e)}), 500
-
-
    finally:
        if db.is_connected():
            db.close()
 
-@app.route("/register", methods=['POST'])
-def register():
-    data = request.get_json()  # Obtener el JSON desde la solicitud
-    Nombre = data.get('Nombre')
-    Apellido = data.get('Apellido')
-    error = None
-
-    # Verificación de campos
-    if not Nombre:
-        error = 'Se requiere Nombre.'
-    elif not Apellido:
-        error = 'Se requiere contraseña.'
-
-    if error is None:
-        try:
-            # Conecta a la base de datos
-            db = mysql.connector.connect(**config)
-            cursor = db.cursor()
-
-            # Inserta el usuario con la contraseña hasheada
-            query = "INSERT INTO Usuario (Nombre, Apellido) VALUES (%s, %s)"
-            cursor.execute(query, (Nombre, generate_password_hash(Apellido)))
-            db.commit()
-
-            cursor.close()
-            db.close()
-
-            return jsonify({"message": "Usuario registrado exitosamente"}), 201
-
-        except mysql.connector.IntegrityError:
-            return jsonify({"error": f"User {Nombre} is already registered."}), 409
-        except mysql.connector.Error as e:
-            return jsonify({"error": str(e)}), 500
-
-    return jsonify({"error": error}), 400
 
 
