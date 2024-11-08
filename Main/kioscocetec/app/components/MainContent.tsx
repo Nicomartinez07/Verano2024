@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MainContent.css";
 import ProductForm from "./ProductForm";
+import DeleteForm from "./DeleteForm";
 
 interface Product {
   Id: number;
@@ -32,11 +33,20 @@ export default function MainContent({
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [products, setProducts] = useState<Product[]>([]); // Estado para almacenar los productos
   const [showProductForm, setShowProductForm] = useState(false); // Estado para mostrar el formulario
+  const [showDeleteForm, setShowDeleteForm] = useState(false); // Estado para mostrar el formulario
 
   const handleAddProduct = (newProduct: Product) => {
     setProducts((prevProducts) => [...prevProducts, newProduct]); // Agregar el nuevo producto al estado
     setShowProductForm(false); // Cerrar el formulario después de agregar el producto
   };
+
+  const handleRemoveProduct = (productName: string) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.Nombre !== productName)
+    );
+    setShowDeleteForm(false);
+  };
+
   const filteredProducts =
     selectedCategory !== null
       ? productsByCategory[selectedCategory] || []
@@ -59,18 +69,12 @@ export default function MainContent({
       setIsLoading(true);
       const fetchedProducts: Record<number, Product[]> = {};
 
-      console.log("Categorias:");
-      console.log(categories);
-      console.log("Productos por categoria:");
       for (const category of categories) {
         try {
           const response = await fetch(
             `http://127.0.0.1:5000/categoria/${category.Id}`
           );
           const data: Product[] = await response.json();
-
-          console.log(category.Nombre);
-          console.log(data);
           fetchedProducts[category.Id] = data;
         } catch (error) {
           console.error(
@@ -80,8 +84,6 @@ export default function MainContent({
         }
       }
 
-      console.log("Productos por categoria final");
-      console.log(fetchedProducts);
       setProductsByCategory(fetchedProducts);
       setIsLoading(false);
     };
@@ -94,12 +96,7 @@ export default function MainContent({
   };
 
   const displayedProducts = [...filteredProducts, ...products].filter(
-    (product) => {
-      // console.log("Filtro:");
-      // console.log(searchTerm.toLocaleLowerCase());
-      // console.log(product);
-      return product.Nombre.toLowerCase().includes(searchTerm.toLowerCase());
-    }
+    (product) => product.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const arrayUnico = displayedProducts.filter(
@@ -112,6 +109,37 @@ export default function MainContent({
         <div className="spinner">Cargando...</div>
       ) : (
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          {/* Botón para abrir el formulario de agregar producto */}
+          <button
+            onClick={() => setShowProductForm(true)}
+            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+          >
+            Añadir Producto
+          </button>
+
+          {/* Mostrar el formulario para agregar un producto */}
+          {showProductForm && (
+            <ProductForm
+              onClose={() => setShowProductForm(false)}
+              onAddProduct={handleAddProduct}
+            />
+          )}
+          {/* Botón para abrir el formulario de borrar producto */}
+          <button
+            onClick={() => setShowDeleteForm(true)}
+            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+          >
+            Borrar Producto
+          </button>
+
+          {/* Mostrar el formulario para borrar un producto */}
+          {showDeleteForm && (
+            <DeleteForm
+              onClose={() => setShowDeleteForm(false)}
+              onDeleteProduct={handleRemoveProduct} // Cambia onAddProduct a onDeleteProduct
+            />
+          )}
+
           {/* Categories */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Categorías</h2>
@@ -141,21 +169,6 @@ export default function MainContent({
               ))}
             </div>
           </div>
-          {/* Botón para abrir el formulario de agregar producto */}
-          <button
-            onClick={() => setShowProductForm(true)}
-            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Añadir Producto
-          </button>
-
-          {/* Mostrar el formulario para agregar un producto */}
-          {showProductForm && (
-            <ProductForm
-              onClose={() => setShowProductForm(false)}
-              onAddProduct={handleAddProduct}
-            />
-          )}
           {/* Products */}
           <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
             {arrayUnico.length > 0 ? (

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
-import ProductForm from "./ProductForm";
+
 
 interface Product {
   Id: string;
@@ -28,8 +28,14 @@ const Header: React.FC<HeaderProps> = ({
   const [showLogin, setShowLogin] = useState(false);
   const [showProduct, setShowProduct] = useState(false);
 
-  const totalQuantity = selectedProducts.reduce((total, product) => total + product.quantity, 0);
-  const totalPrice = selectedProducts.reduce((total, product) => total + product.Precio_venta * product.quantity, 0);
+  const totalQuantity = selectedProducts.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
+  const totalPrice = selectedProducts.reduce(
+    (total, product) => total + product.Precio_venta * product.quantity,
+    0
+  );
 
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
@@ -37,7 +43,9 @@ const Header: React.FC<HeaderProps> = ({
 
     if (term.length > 3) {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/search?term=${term}`);
+        const response = await fetch(
+          `http://127.0.0.1:5000/search?term=${term}`
+        );
         const data = await response.json();
         onSearch(term);
       } catch (error) {
@@ -66,14 +74,6 @@ const Header: React.FC<HeaderProps> = ({
           <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
         </a>
 
-        <div>
-          <button
-            onClick={() => setShowProduct(true)}
-            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Añadir Producto
-          </button>
-        </div>
         <div>
           <button
             onClick={() => setShowLogin(true)}
@@ -129,7 +129,8 @@ const Header: React.FC<HeaderProps> = ({
                       className="flex justify-between items-center"
                     >
                       <span>
-                        {product.Nombre} - ${product.Precio_venta} (Cantidad: {product.quantity})
+                        {product.Nombre} - ${product.Precio_venta} (Cantidad:{" "}
+                        {product.quantity})
                       </span>
                       <button
                         onClick={() => handleRemoveProduct(product)}
@@ -155,7 +156,6 @@ const Header: React.FC<HeaderProps> = ({
       </div>
 
       {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
-      {showProduct && <ProductForm onClose={() => setShowProduct(false)} />}
     </header>
   );
 };

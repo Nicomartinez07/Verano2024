@@ -21,19 +21,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Crear el objeto del nuevo producto
     const newProduct = {
-      Id: Math.random(), // Usamos un valor aleatorio para ID temporal (mejor usar un ID real si está disponible)
+      Id: Math.random(),
       Nombre: nombre,
       Precio_venta: parseFloat(precioVenta.toString()),
-      Img: img, // No se valida la URL, se usa tal cual
+      Img: img,
       CategoriaId: parseInt(categoriaId), // Aquí cambiamos int
     };
 
-    // Llamar a la función onAddProduct para pasar el nuevo producto
     onAddProduct(newProduct);
 
-    // Limpiar el formulario y cerrar el modal
     setNombre("");
     setPrecioVenta("");
     setImg("");
@@ -73,22 +70,36 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             placeholder="Link de imagen"
           />
           <label className="block text-black mb-2">Categoría</label>
-          <input
-            type="text" // Campo de texto para la categoría
+          <select
             value={categoriaId}
-            onChange={(e) => setCategoriaId(e.target.value)} // Actualizar como string
+            onChange={(e) => setCategoriaId(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
-            placeholder="Nombre de la Categoría"
-          />
-          <label className="block text-black mb-2">Marca</label>{" "}
-          {/* Nuevo campo para la Marca */}
-          <input
-            type="text" // Campo de texto para la marca
+          >
+            <option value="">Selecciona una categoría</option>
+            <option value="1">Bebidas</option>
+            <option value="2">Galletitas</option>
+            <option value="3">Snacks</option>
+            <option value="4">Alfajores</option>
+            <option value="5">Golosinas</option>
+          </select>
+          <label className="block text-black mb-2">Marca</label>
+          <select
             value={marca}
-            onChange={(e) => setMarca(e.target.value)} // Actualizar la marca
+            onChange={(e) => setMarca(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
-            placeholder="Marca del producto"
-          />
+          >
+            <option value="">Selecciona una Marca</option>
+            <option value="1">Arcor</option>
+            <option value="2">The Coca-Cola Company</option>
+            <option value="3">Pepsico</option>
+            <option value="4">Baggio</option>
+            <option value="5">Mondelez</option>
+            <option value="1">Bagley</option>
+            <option value="2">Georgalos</option>
+            <option value="3">Don Satur</option>
+            <option value="4">Guaymallén</option>
+            <option value="5">Ferrero</option>
+          </select>
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
