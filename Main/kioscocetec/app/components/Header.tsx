@@ -25,7 +25,6 @@ const Header: React.FC<HeaderProps> = ({
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [cartAnimation, setCartAnimation] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [showProduct, setShowProduct] = useState(false);
 
   const totalQuantity = selectedProducts.reduce(
     (total, product) => total + product.quantity,
@@ -61,11 +60,6 @@ const Header: React.FC<HeaderProps> = ({
     setIsCartVisible(!isCartVisible);
   };
 
-  const handleAddProduct = () => {
-    setCartAnimation(true);
-    setTimeout(() => setCartAnimation(false), 300);
-  };
-
   return (
     <header className="fixed top-0 left-0 w-full bg-[#be5600] py-4 z-30">
       <div className="flex items-center justify-between px-8">
@@ -89,8 +83,22 @@ const Header: React.FC<HeaderProps> = ({
             placeholder="Buscar"
             type="search"
             name="search"
-            className="border rounded-lg py-3 px-6 text-black placeholder:text-black"
+            className="border rounded-lg py-3 px-6 pl-10 text-black placeholder:text-black"
           />
+          <svg
+            className="absolute left-3 top-3 w-5 h-5 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M11 5a6 6 0 015.196 8.804l4.612 4.613a1 1 0 01-1.414 1.415l-4.612-4.613A6 6 0 1111 5z"
+            />
+          </svg>
           {searchResults.length > 0 && (
             <ul className="absolute top-full left-0 w-full bg-white shadow-lg z-10">
               {searchResults.map((product) => (

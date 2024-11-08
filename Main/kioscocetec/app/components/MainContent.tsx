@@ -193,7 +193,7 @@ export default function MainContent({
                         onClick={() => onAddProduct(product)}
                         className="ml-2 text-sm rounded-md bg-[#FF9C73]  text-white py-1 px-2 hover:bg-[#be5600]"
                       >
-                        Comprar
+                        Añadir al carrito
                       </button>
                     </div>
                   </div>
