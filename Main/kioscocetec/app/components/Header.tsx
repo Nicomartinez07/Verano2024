@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
 
-
 interface Product {
   Id: string;
   Nombre: string;
@@ -71,13 +70,13 @@ const Header: React.FC<HeaderProps> = ({
     <header className="fixed top-0 left-0 w-full bg-[#be5600] py-4 z-30">
       <div className="flex items-center justify-between px-8">
         <a href="/" className="flex items-center">
-          <h1 className="titulo text-4xl font-bold text-white">𝙆𝙄𝙊𝙎𝘾𝙊 𝘾𝙀𝙏𝙀𝘾</h1>
+          <h1 className="titulo text-4xl font-bold text-white">𝖪𝗂𝗈𝗌𝖼𝗈 𝖢𝖤𝖳𝖤𝖢</h1>
         </a>
 
         <div>
           <button
             onClick={() => setShowLogin(true)}
-            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
           >
             Iniciar Sesión
           </button>

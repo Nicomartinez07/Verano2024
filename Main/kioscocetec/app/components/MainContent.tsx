@@ -112,7 +112,7 @@ export default function MainContent({
           {/* Botón para abrir el formulario de agregar producto */}
           <button
             onClick={() => setShowProductForm(true)}
-            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
           >
             Añadir Producto
           </button>
@@ -127,7 +127,7 @@ export default function MainContent({
           {/* Botón para abrir el formulario de borrar producto */}
           <button
             onClick={() => setShowDeleteForm(true)}
-            className="ml-4 text-white bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
           >
             Borrar Producto
           </button>
@@ -148,9 +148,9 @@ export default function MainContent({
                 onClick={() => handleCategorySelect(null)}
                 className={`text-sm rounded-md ${
                   selectedCategory === null
-                    ? "bg-blue-500 text-white"
+                    ? "bg-[#be5600] text-white"
                     : "bg-gray-200 text-gray-900"
-                } py-1 px-2 hover:bg-gray-300`}
+                } py-1 px-2 hover:bg-[#be5600]`}
               >
                 Todas
               </button>
@@ -160,9 +160,9 @@ export default function MainContent({
                   onClick={() => handleCategorySelect(category.Id)}
                   className={`text-sm rounded-md ${
                     selectedCategory === category.Id
-                      ? "bg-blue-500 text-white"
+                      ? "bg-[#be5600] text-white"
                       : "bg-gray-200 text-gray-900"
-                  } py-1 px-2 hover:bg-gray-300`}
+                  } py-1 px-2 hover:bg-[#be5600]`}
                 >
                   {category.Nombre}
                 </button>
@@ -191,7 +191,7 @@ export default function MainContent({
                       </p>
                       <button
                         onClick={() => onAddProduct(product)}
-                        className="ml-2 text-sm rounded-md bg-blue-500 text-white py-1 px-2 hover:bg-blue-600"
+                        className="ml-2 text-sm rounded-md bg-[#FF9C73]  text-white py-1 px-2 hover:bg-[#be5600]"
                       >
                         Comprar
                       </button>

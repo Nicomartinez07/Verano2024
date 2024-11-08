@@ -67,7 +67,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             value={img}
             onChange={(e) => setImg(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
-            placeholder="Link de imagen"
+            placeholder="Link de Imagen Png"
           />
           <label className="block text-black mb-2">Categoría</label>
           <select
