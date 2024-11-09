@@ -10,6 +10,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose }) => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-80">
         <h2 className="text-2xl font-bold mb-4 text-black">Iniciar Sesion</h2>
         
+        {/*Tener que desarrollar un formulario basico el cual permita poner un usuario basico*/}
+        {/*Y que en base a eso, la pagina muestre cosas distintas*/}
         <form>
           <label className="block text-black mb-2">Nombre</label>
           <input

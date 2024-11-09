@@ -31,11 +31,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
 
     onAddProduct(newProduct);
 
+    // Limpia los valores
     setNombre("");
     setPrecioVenta("");
     setImg("");
-    setCategoriaId(""); // Limpiar la categoría
-    setMarca(""); // Limpiar la marca
+    setCategoriaId(""); 
+    setMarca("");
     onClose(); // Cerrar el formulario
   };
 
@@ -68,12 +69,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
             placeholder="Link de Imagen Png"
           />
+
+          {/*Bien desarrollado tendria que se un fetch a Categoria y despues*/}
+          {/*Generar opciones por cada elemento de la lista*/}
+          {/*¿Tendria que se el fetch aca o el fetch traido de una funcion de otro lado?*/}
           <label className="block text-black mb-2">Categoría</label>
           <select
             value={categoriaId}
             onChange={(e) => setCategoriaId(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
           >
+            
             <option value="">Selecciona una categoría</option>
             <option value="1">Bebidas</option>
             <option value="2">Galletitas</option>
@@ -81,6 +87,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             <option value="4">Alfajores</option>
             <option value="5">Golosinas</option>
           </select>
+
+          {/*Bien desarrollado tendria que se un fetch a marcas y despues*/}
+          {/*Generar opciones por cada elemento de la lista*/}
           <label className="block text-black mb-2">Marca</label>
           <select
             value={marca}
@@ -99,6 +108,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             <option value="4">Guaymallén</option>
             <option value="5">Ferrero</option>
           </select>
+
+          {/*Aca tendria que se un fetch a un enlace el cual tenga un PUT, y se inserte todos los*/}
+          {/*Valores del formulario a la base de datos*/}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"

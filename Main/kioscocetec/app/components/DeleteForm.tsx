@@ -23,7 +23,11 @@ const DeleteForm: React.FC<DeleteFormProps> = ({
       <div className="bg-white p-8 rounded-lg shadow-lg w-80">
         <h2 className="text-2xl font-bold mb-4 text-black">Borrar producto</h2>
 
+
         <form onSubmit={handleSubmit}>
+          {/*Desarrollo: hacer una consulta que devuelva una lista de nombres de producto*/}
+          {/*Mostrarla en metodo de Select, y que de ahi se pueda seleccionar un producto especifico*/}
+          {/*Y que al borrarlo mande una query*/}
           <label className="block text-black mb-2">Nombre</label>
           <input
             type="text"
@@ -33,6 +37,8 @@ const DeleteForm: React.FC<DeleteFormProps> = ({
             placeholder="Ingresa Nombre"
           />
 
+          {/*Aca tendria que ser una query pegandole a la base de datos la cual borre el producto*/}
+          {/*¿Por el nombre o el id?*/}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
 
+//Interfaces
 interface Product {
   Id: string;
   Nombre: string;
   Precio_venta: number;
   quantity: number;
 }
-
 interface HeaderProps {
   onSearch: (term: string) => void;
   selectedProducts: Product[];
@@ -26,10 +26,12 @@ const Header: React.FC<HeaderProps> = ({
   const [cartAnimation, setCartAnimation] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
+  //Calcula la cantidad de productos en el carrito
   const totalQuantity = selectedProducts.reduce(
     (total, product) => total + product.quantity,
     0
   );
+  //Calcula el precio total
   const totalPrice = selectedProducts.reduce(
     (total, product) => total + product.Precio_venta * product.quantity,
     0
@@ -58,6 +60,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  //Despliega el carrito
   const toggleCartVisibility = () => {
     setIsCartVisible(!isCartVisible);
   };
@@ -69,6 +72,7 @@ const Header: React.FC<HeaderProps> = ({
           <h1 className="titulo text-4xl font-bold text-white">𝖪𝗂𝗈𝗌𝖼𝗈 𝖢𝖤𝖳𝖤𝖢</h1>
         </a>
 
+        {/*Boton de iniciar sesion*/}
         <div>
           <button
             onClick={() => setShowLogin(true)}
@@ -78,6 +82,7 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
 
+        {/*Buscador */}
         <div className="relative flex items-center">
           <input
             value={searchTerm}
@@ -101,6 +106,7 @@ const Header: React.FC<HeaderProps> = ({
               d="M11 5a6 6 0 015.196 8.804l4.612 4.613a1 1 0 01-1.414 1.415l-4.612-4.613A6 6 0 1111 5z"
             />
           </svg>
+
           {/*Preguntar si aca no iria > 3 */}
           {searchResults.length > 0 && (
             <ul className="absolute top-full left-0 w-full bg-white shadow-lg z-10">
@@ -113,6 +119,7 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </div>
 
+        {/*Carrito */}
         <div className="relative">
           <button
             onClick={toggleCartVisibility}

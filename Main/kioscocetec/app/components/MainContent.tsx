@@ -3,6 +3,7 @@ import "./MainContent.css";
 import ProductForm from "./ProductForm";
 import DeleteForm from "./DeleteForm";
 
+//Crea interfaces que definen que contienen los objetos 
 interface Product {
   Id: number;
   Nombre: string;
@@ -10,12 +11,10 @@ interface Product {
   Img: string;
   CategoriaId: number;
 }
-
 interface Category {
   Id: number;
   Nombre: string;
 }
-
 interface MainContentProps {
   onAddProduct: (product: Product) => void;
   searchTerm: string;
@@ -44,7 +43,7 @@ export default function MainContent({
     setProducts((prevProducts) =>
       prevProducts.filter((product) => product.Nombre !== productName)
     );
-    setShowDeleteForm(false);
+    setShowDeleteForm(false); // Cerrar el formulario después de borrar el producto
   };
 
   const filteredProducts =
@@ -52,7 +51,7 @@ export default function MainContent({
       ? productsByCategory[selectedCategory] || []
       : Object.values(productsByCategory).flat();
 
-  // Fetch categories on component mount
+  //Guarda en setCategories la lista de categorias que le llega
   useEffect(() => {
     fetch("http://127.0.0.1:5000/categorias")
       .then((response) => response.json())
@@ -60,8 +59,9 @@ export default function MainContent({
       .catch((error) => console.error("Error fetching categories:", error));
   }, []);
 
-  // Fetch products once categories are loaded
+  //Llama a los productos cuando la lista de categorias cargo
   useEffect(() => {
+    //Verifica si la lista de categorias contiene algo
     if (categories.length === 0 || Object.keys(productsByCategory).length > 0)
       return;
 
@@ -69,6 +69,7 @@ export default function MainContent({
       setIsLoading(true);
       const fetchedProducts: Record<number, Product[]> = {};
 
+      //Por cada categoria en la lista
       for (const category of categories) {
         try {
           const response = await fetch(
@@ -76,6 +77,7 @@ export default function MainContent({
           );
           const data: Product[] = await response.json();
           fetchedProducts[category.Id] = data;
+          //Guarda los productos que recive de X categoria, en fetchedProducts 
         } catch (error) {
           console.error(
             `Error fetching products for category ${category.Id}:`,
@@ -83,17 +85,18 @@ export default function MainContent({
           );
         }
       }
-
+      //Muestra los productos mediante setProductsByCategory (los saca del Fetch de antes)
       setProductsByCategory(fetchedProducts);
       setIsLoading(false);
     };
-
     fetchProducts();
   }, [categories]);
 
+  //Maneja el selectedCategory mediante el Id
   const handleCategorySelect = (categoryId: number | null) => {
     setSelectedCategory(categoryId);
   };
+
 
   const displayedProducts = [...filteredProducts, ...products].filter(
     (product) => product.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -116,7 +119,6 @@ export default function MainContent({
           >
             Añadir Producto
           </button>
-
           {/* Mostrar el formulario para agregar un producto */}
           {showProductForm && (
             <ProductForm
@@ -124,6 +126,7 @@ export default function MainContent({
               onAddProduct={handleAddProduct}
             />
           )}
+
           {/* Botón para abrir el formulario de borrar producto */}
           <button
             onClick={() => setShowDeleteForm(true)}
@@ -131,12 +134,11 @@ export default function MainContent({
           >
             Borrar Producto
           </button>
-
           {/* Mostrar el formulario para borrar un producto */}
           {showDeleteForm && (
             <DeleteForm
               onClose={() => setShowDeleteForm(false)}
-              onDeleteProduct={handleRemoveProduct} // Cambia onAddProduct a onDeleteProduct
+              onDeleteProduct={handleRemoveProduct} 
             />
           )}
 
