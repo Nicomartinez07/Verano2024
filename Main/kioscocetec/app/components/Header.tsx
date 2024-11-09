@@ -35,6 +35,8 @@ const Header: React.FC<HeaderProps> = ({
     0
   );
 
+
+  //Preguntar si en el onSearch() no iria data? porque data es lo q al final busca posta (a travez de la base de datos)
   const handleSearch = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
     setSearchTerm(term);
@@ -99,6 +101,7 @@ const Header: React.FC<HeaderProps> = ({
               d="M11 5a6 6 0 015.196 8.804l4.612 4.613a1 1 0 01-1.414 1.415l-4.612-4.613A6 6 0 1111 5z"
             />
           </svg>
+          {/*Preguntar si aca no iria > 3 */}
           {searchResults.length > 0 && (
             <ul className="absolute top-full left-0 w-full bg-white shadow-lg z-10">
               {searchResults.map((product) => (
