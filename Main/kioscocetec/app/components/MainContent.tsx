@@ -36,6 +36,7 @@ export default function MainContent({
   const [showDeleteForm, setShowDeleteForm] = useState(false); // Estado para mostrar el formulario
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
   const productsPerPage = 8; // Número de productos por página
+  const [userRoleState, setUserRoleState] = useState("")
 
   const handleAddProduct = (newProduct: Product) => {
     setProducts((prevProducts) => [...prevProducts, newProduct]); // Agregar el nuevo producto al estado
@@ -56,6 +57,7 @@ export default function MainContent({
             prevProducts.filter((product) => product.Nombre !== productName)
           );
           setShowDeleteForm(false); // Cierra el formulario después de borrar el producto
+          location.reload()
         } else {
           console.error("Error al eliminar el producto");
         }
@@ -107,7 +109,10 @@ export default function MainContent({
       setIsLoading(false);
     };
     fetchProducts();
-  }, [categories]);
+
+    const userRole = localStorage.getItem("userRole")
+    setUserRoleState(userRole)
+  }, [categories, userRoleState ]);
 
   // Maneja el selectedCategory mediante el Id
   const handleCategorySelect = (categoryId: number | null) => {
@@ -191,19 +196,20 @@ export default function MainContent({
                         ${product.Precio_venta}
                       </p>
                       <div className="flex">
-                        <button
+                        {userRoleState && userRoleState === "cliente" ?  <button
                           onClick={() => onAddProduct(product)}
                           className="ml-2 text-sm rounded-md bg-[#FF9C73] text-white py-1 px-2 hover:bg-[#be5600]"
                         >
                           Añadir al carrito
-                        </button>
-                        <button
+                        </button> : <>...</>}
+                       {userRoleState && userRoleState === "admin" ? <button
                           onClick={() => handleRemoveProduct(product.Nombre)}
                           className="ml-2 text-sm rounded-md bg-white-500 text-white py-1 px-2 hover:bg-red-600"
                           title="Eliminar"
                         >
                           🗑️
-                        </button>
+                        </button> : <>...</>}
+                        
                       </div>
                     </div>
                   </div>

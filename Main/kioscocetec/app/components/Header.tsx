@@ -104,6 +104,8 @@ const Header: React.FC<HeaderProps> = ({
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserRole(null); // Limpia el rol del usuario
+    localStorage.removeItem("userRole")
+    location.reload()
   };
 
   // Manejador de inicio de sesión
@@ -117,8 +119,10 @@ const Header: React.FC<HeaderProps> = ({
 
       if (username === "admin") {
         setUserRole("admin");
+        location.reload()
       } else {
         setUserRole("cliente");
+        location.reload()
       }
     } else {
       alert("Credenciales incorrectas"); // Mensaje de error
