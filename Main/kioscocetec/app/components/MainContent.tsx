@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./MainContent.css";
-import ProductForm from "./ProductForm";
-import DeleteForm from "./DeleteForm";
 
-//Crea interfaces que definen que contienen los objetos 
+//Crea interfaces que definen que contienen los objetos
 interface Product {
   Id: number;
   Nombre: string;
@@ -31,20 +29,6 @@ export default function MainContent({
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [products, setProducts] = useState<Product[]>([]); // Estado para almacenar los productos
-  const [showProductForm, setShowProductForm] = useState(false); // Estado para mostrar el formulario
-  const [showDeleteForm, setShowDeleteForm] = useState(false); // Estado para mostrar el formulario
-
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]); // Agregar el nuevo producto al estado
-    setShowProductForm(false); // Cerrar el formulario después de agregar el producto
-  };
-
-  const handleRemoveProduct = (productName: string) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.Nombre !== productName)
-    );
-    setShowDeleteForm(false); // Cerrar el formulario después de borrar el producto
-  };
 
   const filteredProducts =
     selectedCategory !== null
@@ -77,7 +61,7 @@ export default function MainContent({
           );
           const data: Product[] = await response.json();
           fetchedProducts[category.Id] = data;
-          //Guarda los productos que recive de X categoria, en fetchedProducts 
+          //Guarda los productos que recive de X categoria, en fetchedProducts
         } catch (error) {
           console.error(
             `Error fetching products for category ${category.Id}:`,
@@ -97,7 +81,6 @@ export default function MainContent({
     setSelectedCategory(categoryId);
   };
 
-
   const displayedProducts = [...filteredProducts, ...products].filter(
     (product) => product.Nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -112,36 +95,6 @@ export default function MainContent({
         <div className="spinner">Cargando...</div>
       ) : (
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          {/* Botón para abrir el formulario de agregar producto */}
-          <button
-            onClick={() => setShowProductForm(true)}
-            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Añadir Producto
-          </button>
-          {/* Mostrar el formulario para agregar un producto */}
-          {showProductForm && (
-            <ProductForm
-              onClose={() => setShowProductForm(false)}
-              onAddProduct={handleAddProduct}
-            />
-          )}
-
-          {/* Botón para abrir el formulario de borrar producto */}
-          <button
-            onClick={() => setShowDeleteForm(true)}
-            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Borrar Producto
-          </button>
-          {/* Mostrar el formulario para borrar un producto */}
-          {showDeleteForm && (
-            <DeleteForm
-              onClose={() => setShowDeleteForm(false)}
-              onDeleteProduct={handleRemoveProduct} 
-            />
-          )}
-
           {/* Categories */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Categorías</h2>

@@ -51,6 +51,7 @@ const App = () => {
         onSearch={setSearchTerm}
         selectedProducts={selectedProducts}
         handleRemoveProduct={handleRemoveProduct} // Pasamos la función de eliminar una unidad
+        onAddProduct={handleAddProduct}
       />
       <MainContent searchTerm={searchTerm} onAddProduct={handleAddProduct} />
 
