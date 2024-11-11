@@ -17,6 +17,7 @@ interface Category {
 }
 interface MainContentProps {
   onAddProduct: (product: Product) => void;
+  handleRemoveProduct: (product: Product) => void;
   searchTerm: string;
 }
 

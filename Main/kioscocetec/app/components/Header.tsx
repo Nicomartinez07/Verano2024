@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
 import ProductForm from "./ProductForm";
@@ -37,6 +37,28 @@ const Header: React.FC<HeaderProps> = ({
 
   const [showProductForm, setShowProductForm] = useState(false);
   const [showDeleteForm, setShowDeleteForm] = useState(false);
+
+  // Cargar la sesión desde localStorage cuando la página se carga
+  useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    const storedLoginStatus = localStorage.getItem("isLoggedIn");
+
+    if (storedLoginStatus === "true" && storedRole) {
+      setIsLoggedIn(true);
+      setUserRole(storedRole);
+    }
+  }, []);
+
+  // Guardar el estado de la sesión en localStorage cuando se cambia
+  useEffect(() => {
+    if (isLoggedIn) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("userRole", userRole || "");
+    } else {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+    }
+  }, [isLoggedIn, userRole]);
 
   // Calcula la cantidad de productos en el carrito
   const totalQuantity = selectedProducts.reduce(
@@ -108,14 +130,34 @@ const Header: React.FC<HeaderProps> = ({
     setShowProductForm(false);
   };
 
-  const handleRemoveProductByName = (productName: string) => {
-    handleRemoveProduct({
-      Id: "",
-      Nombre: productName,
-      Precio_venta: 0,
-      quantity: 0,
-    });
-    setShowDeleteForm(false);
+  const handleRemoveProductByName = async (productName: string) => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/eliminar_producto", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ Nombre: productName }), // Envia el nombre del producto
+      });
+
+      if (response.ok) {
+        // Si la respuesta es exitosa, elimina el producto de la lista local
+        handleRemoveProduct({
+          Id: "",
+          Nombre: productName,
+          Precio_venta: 0,
+          quantity: 0,
+        });
+        setShowDeleteForm(false); // Cierra el formulario
+        alert("Producto eliminado exitosamente.");
+      } else {
+        const data = await response.json();
+        alert(data.error || "Error al eliminar el producto.");
+      }
+    } catch (error) {
+      console.error("Error eliminando producto:", error);
+      alert("Hubo un error al eliminar el producto.");
+    }
   };
 
   return (
