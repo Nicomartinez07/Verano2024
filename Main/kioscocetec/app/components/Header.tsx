@@ -3,6 +3,8 @@ import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
 import ProductForm from "./ProductForm";
 import DeleteForm from "./DeleteForm";
+import { FaUserAstronaut } from "react-icons/fa";
+import { FaUserGraduate } from "react-icons/fa";
 
 // Interfaces
 interface Product {
@@ -127,17 +129,26 @@ const Header: React.FC<HeaderProps> = ({
         <div>
           <div>
             {isLoggedIn ? (
-              <>
+              <div className="flex items-center space-x-4">
                 <button
                   onClick={handleLogout}
-                  className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+                  className="text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
                 >
                   Cerrar Sesión
                 </button>
-                <span className="ml-4 text-white font-bold">
-                  {userRole === "admin" ? "Administrador" : "Cliente"}
+                <span className="text-white font-bold flex items-center">
+                  {userRole === "admin" && (
+                    <>
+                      <FaUserAstronaut className="mr-2" /> Administrador
+                    </>
+                  )}
+                  {userRole === "cliente" && (
+                    <>
+                      <FaUserGraduate className="mr-2" /> Cliente
+                    </>
+                  )}
                 </span>
-              </>
+              </div>
             ) : (
               <button
                 onClick={() => setShowLogin(true)}

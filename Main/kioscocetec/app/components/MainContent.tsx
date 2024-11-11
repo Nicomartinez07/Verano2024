@@ -42,10 +42,24 @@ export default function MainContent({
   };
 
   const handleRemoveProduct = (productName: string) => {
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.Nombre !== productName)
-    );
-    setShowDeleteForm(false); // Cerrar el formulario después de borrar el producto
+    fetch("http://127.0.0.1:5000/eliminar_producto", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre: productName }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setProducts((prevProducts) =>
+            prevProducts.filter((product) => product.Nombre !== productName)
+          );
+          setShowDeleteForm(false); // Cierra el formulario después de borrar el producto
+        } else {
+          console.error("Error al eliminar el producto");
+        }
+      })
+      .catch((error) => console.error("Error:", error));
   };
 
   const filteredProducts =

@@ -73,66 +73,6 @@ def categorias():
     db.close()
     return jsonify(result)
 
-#DELETE DE PRODUCTO
-@app.route("/producto/<int:id>", methods=('GET', 'DELETE'))
-def detalle_producto(id):
-    try:
-        # Conexión a la base de datos
-        db = mysql.connector.connect(**config)
-        
-        if db.is_connected():
-            # Crear un cursor
-            cursor = db.cursor(dictionary=True)
-            cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
-
-            if request.method == 'GET':
-                # 1. Consulta para obtener el producto
-                query_producto = "SELECT Id, Nombre, Precio_venta, Id_categoria, Id_marca FROM Productos WHERE Id = %s"
-                cursor.execute(query_producto, (id,))
-                product = cursor.fetchone()
-
-                # Si el producto no existe, devolver error 404
-                if not product:
-                    cursor.close()
-                    return jsonify({"error": "Producto no encontrado"}), 404
-
-                # 2. Consulta para obtener el nombre de la Categoría (si existe)
-                query_categoria = "SELECT Nombre FROM Categorias WHERE Id = %s"
-                cursor.execute(query_categoria, (product['Id_categoria'],))
-                categoria = cursor.fetchone()
-
-                # 3. Consulta para obtener el nombre de la Marca (si existe)
-                query_marca = "SELECT Nombre FROM Marcas WHERE Id = %s"
-                cursor.execute(query_marca, (product['Id_marca'],))
-                marca = cursor.fetchone()
-
-                # Añadir los nombres de la categoría y marca al producto
-                product['nombre_categoria'] = categoria['Nombre'] if categoria else None
-                product['nombre_marca'] = marca['Nombre'] if marca else None
-
-                cursor.close()
-                return jsonify(product)
-
-            elif request.method == 'DELETE':
-                # Consulta para borrar el producto
-                delete_producto = "DELETE FROM Productos WHERE Id = %s"
-                cursor.execute(delete_producto, (id,))
-                db.commit()
-
-                if cursor.rowcount == 0:
-                    cursor.close()
-                    return jsonify({"error": "Producto no encontrado"}), 404
-
-                cursor.close()
-                return jsonify({"message": "Producto eliminado correctamente"}), 200
-
-    except mysql.connector.Error as e:
-        return jsonify({"error": str(e)}), 500
-
-    finally:
-        if db.is_connected():
-            db.close()
-
 
 #PARA INSERTAR PRODUCTO FALTA DISE�AR
 @app.route("/AñadirProducto", methods=('PUT',))
@@ -234,4 +174,35 @@ def productos_por_categoria(id):
            db.close()
 
 
+
+@app.route('/eliminar_producto', methods=['DELETE'])
+def eliminar_producto():
+    nombre_producto = request.json.get('Nombre')  # Recibe el nombre del producto desde el frontend
+
+    if not nombre_producto:
+        return jsonify({"error": "Nombre del producto es requerido"}), 400
+
+    try:
+        # Conectar a la base de datos
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+
+        # Eliminar el producto basado en el nombre
+        query = "DELETE FROM Productos WHERE Nombre = %s"
+        cursor.execute(query, (nombre_producto,))
+        connection.commit()
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Producto no encontrado"}), 404
+
+        return jsonify({"message": "Producto eliminado exitosamente"}), 200
+
+    except mysql.connector.Error as err:
+        print(f"Error al eliminar producto: {err}")
+        return jsonify({"error": "Error en la base de datos"}), 500
+
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
 
