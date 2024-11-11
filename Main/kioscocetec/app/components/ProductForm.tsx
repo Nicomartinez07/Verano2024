@@ -8,6 +8,7 @@ interface ProductFormProps {
     Precio_venta: number;
     Img: string;
     CategoriaId: number;
+    MarcaId: number;
   }) => void;
 }
 
@@ -15,29 +16,60 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
   const [nombre, setNombre] = useState("");
   const [precioVenta, setPrecioVenta] = useState<number | string>("");
   const [img, setImg] = useState("");
-  const [categoriaId, setCategoriaId] = useState<string>(""); // Cambiar a string
-  const [marca, setMarca] = useState(""); // Nuevo estado para Marca
+  const [categoriaId, setCategoriaId] = useState<string>("");
+  const [marcaId, setMarcaId] = useState<string>("");
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Crear el objeto del nuevo producto
     const newProduct = {
-      Id: Math.random(),
       Nombre: nombre,
       Precio_venta: parseFloat(precioVenta.toString()),
       Img: img,
-      CategoriaId: parseInt(categoriaId), // Aquí cambiamos int
+      Id_categoria: parseInt(categoriaId), // Asegúrate de que esté bien en la base de datos
+      Id_marca: parseInt(marcaId), // Asegúrate de que esté bien en la base de datos
     };
 
-    onAddProduct(newProduct);
+    try {
+      // Realiza la solicitud PUT al backend
+      const response = await fetch("http://127.0.0.1:5000/AñadirProducto", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProduct),
+      });
 
-    // Limpia los valores
-    setNombre("");
-    setPrecioVenta("");
-    setImg("");
-    setCategoriaId(""); 
-    setMarca("");
-    onClose(); // Cerrar el formulario
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Producto añadido:", result);
+
+        // Llamar a onAddProduct para agregar el nuevo producto
+        onAddProduct({
+          Id: Math.random(), // Asume que esto es temporal; usa el ID de la base de datos real si es necesario
+          Nombre: nombre,
+          Precio_venta: parseFloat(precioVenta.toString()),
+          Img: img,
+          CategoriaId: parseInt(categoriaId),
+          MarcaId: parseInt(marcaId),
+        });
+
+        // Limpiar el formulario
+        setNombre("");
+        setPrecioVenta("");
+        setImg("");
+        setCategoriaId("");
+        setMarcaId("");
+        onClose(); // Cerrar el formulario
+      } else {
+        console.error("Error al añadir el producto");
+        alert("Hubo un problema al añadir el producto.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al realizar la solicitud.");
+    }
   };
 
   return (
@@ -69,48 +101,38 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
             placeholder="Link de Imagen Png"
           />
-
-          {/*Bien desarrollado tendria que se un fetch a Categoria y despues*/}
-          {/*Generar opciones por cada elemento de la lista*/}
-          {/*¿Tendria que se el fetch aca o el fetch traido de una funcion de otro lado?*/}
           <label className="block text-black mb-2">Categoría</label>
           <select
             value={categoriaId}
             onChange={(e) => setCategoriaId(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
           >
-            
             <option value="">Selecciona una categoría</option>
             <option value="1">Bebidas</option>
-            <option value="2">Galletitas</option>
-            <option value="3">Snacks</option>
+            <option value="3">Galletitas</option>
+            <option value="7">Snacks</option>
             <option value="4">Alfajores</option>
-            <option value="5">Golosinas</option>
+            <option value="8">Golosinas</option>
           </select>
-
-          {/*Bien desarrollado tendria que se un fetch a marcas y despues*/}
-          {/*Generar opciones por cada elemento de la lista*/}
           <label className="block text-black mb-2">Marca</label>
           <select
-            value={marca}
-            onChange={(e) => setMarca(e.target.value)}
+            value={marcaId}
+            onChange={(e) => setMarcaId(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
           >
             <option value="">Selecciona una Marca</option>
-            <option value="1">Arcor</option>
-            <option value="2">The Coca-Cola Company</option>
-            <option value="3">Pepsico</option>
-            <option value="4">Baggio</option>
-            <option value="5">Mondelez</option>
-            <option value="1">Bagley</option>
-            <option value="2">Georgalos</option>
-            <option value="3">Don Satur</option>
-            <option value="4">Guaymallén</option>
-            <option value="5">Ferrero</option>
+            <option value="12">Arcor</option>
+            <option value="13">The Coca-Cola Company</option>
+            <option value="14">Pepsico</option>
+            <option value="15">Baggio</option>
+            <option value="16">Mondelez</option>
+            <option value="17">Bagley</option>
+            <option value="18">Georgalos</option>
+            <option value="19">Don Satur</option>
+            <option value="20">Guaymallén</option>
+            <option value="21">Ferrero</option>
           </select>
 
-          {/*Aca tendria que se un fetch a un enlace el cual tenga un PUT, y se inserte todos los*/}
-          {/*Valores del formulario a la base de datos*/}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"

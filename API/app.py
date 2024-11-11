@@ -134,36 +134,39 @@ def detalle_producto(id):
             db.close()
 
 
-#PARA INSERTAR PRODUCTO FALTA DISEÑAR
+#PARA INSERTAR PRODUCTO FALTA DISE�AR
 @app.route("/AñadirProducto", methods=('PUT',))
 def insertar_producto():
     try:
-        # Conexión a la base de datos
+        # Conexi�n a la base de datos
         db = mysql.connector.connect(**config)
         if db.is_connected():
             # Crear un cursor
             cursor = db.cursor()
             data = request.get_json()
-            # Validar que todos los campos necesarios estén presentes en el JSON
-            required_fields = ['Nombre', 'Img', 'Precio_venta', 'Id_categoria', 'Id_marca']
+            # Validar que todos los campos necesarios est�n presentes en el JSON
+            required_fields = ['Nombre', 'Img',  'Precio_venta', 'Id_categoria', 'Id_marca']
             if not all(field in data for field in required_fields):
                 return jsonify({"error": "Faltan campos obligatorios"}), 400
             # Extraer los datos del producto
+            precio_compra = 0
             nombre = data['Nombre']
             img = data['Img']
             precio_venta = data['Precio_venta']
             id_categoria = data['Id_categoria']
             id_marca = data['Id_marca']
             # Consulta SQL para insertar el producto
+            # Consulta SQL corregida
             query_insertar = """
-                INSERT INTO Productos (Id_marca, Id_categoria, Nombre, Img, Precio_venta)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                INSERT INTO Productos (Id_marca, Id_categoria, Nombre, Img, Precio_venta, Precio_compra)
+                VALUES (%s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query_insertar, (id_marca, id_categoria, nombre, img, precio_venta,))
+            cursor.execute(query_insertar, (id_marca, id_categoria, nombre, img, precio_venta, precio_compra))
+
             db.commit()
-            # Confirmar que el producto se insertó correctamente
+            # Confirmar que el producto se insert� correctamente
             if cursor.rowcount == 1:
-                # Obtener el ID del producto recién insertado
+                # Obtener el ID del producto reci�n insertado
                 id_producto = cursor.lastrowid
                 cursor.close()
                 return jsonify({"message": "Producto insertado correctamente", "Nombre": nombre}), 201

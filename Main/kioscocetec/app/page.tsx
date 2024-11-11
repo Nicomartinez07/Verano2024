@@ -10,11 +10,6 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // Manejar la búsqueda
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-  };
-
   // Manejar la adición de productos al carrito
   const handleAddProduct = (product) => {
     setSelectedProducts((prev) => {

@@ -125,21 +125,28 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Botón de iniciar/cerrar sesión */}
         <div>
-          {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-            >
-              Cerrar Sesión
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowLogin(true)}
-              className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-            >
-              Iniciar Sesión
-            </button>
-          )}
+          <div>
+            {isLoggedIn ? (
+              <>
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+                >
+                  Cerrar Sesión
+                </button>
+                <span className="ml-4 text-white font-bold">
+                  {userRole === "admin" ? "Administrador" : "Cliente"}
+                </span>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowLogin(true)}
+                className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
+              >
+                Iniciar Sesión
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Muestra el buscador y el carrito solo si el rol es "cliente" y está logueado */}

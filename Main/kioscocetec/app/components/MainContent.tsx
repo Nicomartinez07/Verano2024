@@ -110,7 +110,10 @@ export default function MainContent({
   // Cálculo de productos para la paginación
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = arrayUnico.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = arrayUnico.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
   const totalPages = Math.ceil(arrayUnico.length / productsPerPage);
 
   const handlePageChange = (pageNumber: number) => {
@@ -123,36 +126,6 @@ export default function MainContent({
         <div className="spinner">Cargando...</div>
       ) : (
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          {/* Botón para abrir el formulario de agregar producto */}
-          <button
-            onClick={() => setShowProductForm(true)}
-            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Añadir Producto
-          </button>
-          {/* Mostrar el formulario para agregar un producto */}
-          {showProductForm && (
-            <ProductForm
-              onClose={() => setShowProductForm(false)}
-              onAddProduct={handleAddProduct}
-            />
-          )}
-
-          {/* Botón para abrir el formulario de borrar producto */}
-          <button
-            onClick={() => setShowDeleteForm(true)}
-            className="ml-4 text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-          >
-            Borrar Producto
-          </button>
-          {/* Mostrar el formulario para borrar un producto */}
-          {showDeleteForm && (
-            <DeleteForm
-              onClose={() => setShowDeleteForm(false)}
-              onDeleteProduct={handleRemoveProduct}
-            />
-          )}
-
           {/* Categories */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Categorías</h2>
