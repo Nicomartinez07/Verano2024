@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface ProductFormProps {
   onClose: () => void;
@@ -18,6 +18,44 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
   const [img, setImg] = useState("");
   const [categoriaId, setCategoriaId] = useState<string>("");
   const [marcaId, setMarcaId] = useState<string>("");
+  const [categories, setCategories] = useState<any[]>([]); // Para almacenar las categorías
+  const [marcas, setMarcas] = useState<any[]>([]); // Para almacenar las marcas
+  const [error, setError] = useState<string>("");
+
+  // Cargar las categorías desde la API
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/categorias");
+      if (!response.ok) {
+        throw new Error("No se pudieron cargar las categorías");
+      }
+      const data = await response.json();
+      setCategories(data);
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las categorías.");
+    }
+  };
+
+  // Cargar las marcas desde la API
+  const fetchMarcas = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/marcas");
+      if (!response.ok) {
+        throw new Error("No se pudieron cargar las marcas");
+      }
+      const data = await response.json();
+      setMarcas(data);
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las marcas.");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchMarcas(); // Llamar a fetchMarcas para cargar las marcas también
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -76,6 +114,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-80">
         <h2 className="text-2xl font-bold mb-4 text-black">Añadir producto</h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <label className="block text-black mb-2">Nombre</label>
           <input
@@ -105,32 +144,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ onClose, onAddProduct }) => {
           <select
             value={categoriaId}
             onChange={(e) => setCategoriaId(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black bg-white"
           >
             <option value="">Selecciona una categoría</option>
-            <option value="1">Bebidas</option>
-            <option value="3">Galletitas</option>
-            <option value="7">Snacks</option>
-            <option value="4">Alfajores</option>
-            <option value="8">Golosinas</option>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <option
+                  key={category.Id}
+                  value={category.Id}
+                  className="text-black"
+                >
+                  {category.Nombre}
+                </option>
+              ))
+            ) : (
+              <option disabled>Cargando categorías...</option>
+            )}
           </select>
+
           <label className="block text-black mb-2">Marca</label>
           <select
             value={marcaId}
             onChange={(e) => setMarcaId(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 text-black bg-white"
           >
             <option value="">Selecciona una Marca</option>
-            <option value="12">Arcor</option>
-            <option value="13">The Coca-Cola Company</option>
-            <option value="14">Pepsico</option>
-            <option value="15">Baggio</option>
-            <option value="16">Mondelez</option>
-            <option value="17">Bagley</option>
-            <option value="18">Georgalos</option>
-            <option value="19">Don Satur</option>
-            <option value="20">Guaymallén</option>
-            <option value="21">Ferrero</option>
+            {marcas.length > 0 ? (
+              marcas.map((marca) => (
+                <option key={marca.Id} value={marca.Id} className="text-black">
+                  {marca.Nombre}
+                </option>
+              ))
+            ) : (
+              <option disabled>Cargando marcas...</option>
+            )}
           </select>
 
           <button

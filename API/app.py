@@ -73,6 +73,17 @@ def categorias():
     db.close()
     return jsonify(result)
 
+@app.route("/marcas")
+def marcas():
+    db = mysql.connector.connect(**config)
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'")
+    query = "SELECT * FROM Marcas"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return jsonify(result)
 
 #PARA INSERTAR PRODUCTO FALTA DISE�AR
 @app.route("/AñadirProducto", methods=('PUT',))
