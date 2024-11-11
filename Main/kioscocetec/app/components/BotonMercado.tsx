@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
-initMercadoPago("TEST-5aae9b6b-9d5e-4982-8735-e3e96c4b7d60");
+initMercadoPago("TEST-569d4f12-f397-4acf-84b5-e9c82ca62b10");
 
 const MercadoButtonComponent = ({ price }) => {
   const [preferenceId, setPreferenceId] = useState(null);
@@ -37,7 +37,7 @@ const MercadoButtonComponent = ({ price }) => {
             headers: {
               "Content-Type": "application/json",
               Authorization:
-                "Bearer TEST-8655529316333601-101413-d5abcfa698c4e37fd9abadd2ac8377df-1079328473", // Use your Mercado Pago access token here
+                "Bearer TEST-8526274776296121-111115-f4e0f22adcf585be18d18cc10eec5233-830735154", // Use your Mercado Pago access token here
             },
             body: JSON.stringify({
               items: [
