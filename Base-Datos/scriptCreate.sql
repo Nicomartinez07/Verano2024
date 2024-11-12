@@ -38,6 +38,11 @@ CREATE TABLE Productos (
     FOREIGN KEY (Id_marca) REFERENCES Marcas(Id),
 );
 
+CREATE TABLE Categorias (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Nombre VARCHAR(50) NOT NULL,
+);
+
 CREATE TABLE Reserva (
     Id INT PRIMARY KEY AUTO_INCREMENT,
     Id_usuario INT NOT NULL ,
@@ -45,11 +50,6 @@ CREATE TABLE Reserva (
     Monto INT NOT NULL,
     FOREIGN KEY (Id_usuario) REFERENCES Usuario(Id),
     FOREIGN KEY (Id_producto) REFERENCES Producto(Id),
-);
-
-CREATE TABLE Categorias (
-    Id INT PRIMARY KEY AUTO_INCREMENT,
-    Nombre VARCHAR(50) NOT NULL,
 );
 
 CREATE TABLE Facturas (
