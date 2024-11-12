@@ -123,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({
       } else {
         setUserRole("cliente");
         location.reload()
-      }
+      } 
     } else {
       alert("Credenciales incorrectas"); // Mensaje de error
     }
@@ -233,16 +233,6 @@ const Header: React.FC<HeaderProps> = ({
                   d="M11 5a6 6 0 015.196 8.804l4.612 4.613a1 1 0 01-1.414 1.415l-4.612-4.613A6 6 0 1111 5z"
                 />
               </svg>
-
-              {searchResults.length > 0 && (
-                <ul className="absolute top-full left-0 w-full bg-white shadow-lg z-10">
-                  {searchResults.map((product) => (
-                    <li key={product.Id} className="px-4 py-2 border-b">
-                      {product.Nombre} - ${product.Precio_venta}
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
 
             {/* Carrito */}
