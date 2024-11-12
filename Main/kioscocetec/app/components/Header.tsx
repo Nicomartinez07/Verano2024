@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import MercadoButtonComponent from "./BotonMercado";
 import LoginForm from "./LoginForm";
 import ProductForm from "./ProductForm";
-import DeleteForm from "./DeleteForm";
 import { FaUserAstronaut } from "react-icons/fa";
 import { FaUserGraduate } from "react-icons/fa";
 
@@ -304,13 +303,6 @@ const Header: React.FC<HeaderProps> = ({
                   onAddProduct={handleAddProduct}
                 />
               )}
-
-              <button
-                onClick={() => setShowDeleteForm(true)}
-                className="text-black bg-[#FF9C73] px-4 py-2 rounded-lg hover:bg-[#FF9C73] transition duration-200"
-              >
-                Borrar Producto
-              </button>
               {showDeleteForm && (
                 <DeleteForm
                   onClose={() => setShowDeleteForm(false)}
