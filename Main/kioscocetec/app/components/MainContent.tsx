@@ -49,7 +49,7 @@ export default function MainContent({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ nombre: productName }),
+      body: JSON.stringify({ Nombre: productName }),
     })
       .then((response) => {
         if (response.ok) {
@@ -57,7 +57,7 @@ export default function MainContent({
             prevProducts.filter((product) => product.Nombre !== productName)
           );
           setShowDeleteForm(false); // Cierra el formulario después de borrar el producto
-          location.reload()
+          location.reload() // Recargar la página para actualizar la lista de productos
         } else {
           console.error("Error al eliminar el producto");
         }
