@@ -35,7 +35,7 @@ export default function MainContent({
   const [showProductForm, setShowProductForm] = useState(false); // Estado para mostrar el formulario
   const [showDeleteForm, setShowDeleteForm] = useState(false); // Estado para mostrar el formulario
   const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
-  const productsPerPage = 8; // Número de productos por página
+  const productsPerPage = 4; // Número de productos por página
   const [userRoleState, setUserRoleState] = useState("")
 
   const handleAddProduct = (newProduct: Product) => {
