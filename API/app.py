@@ -212,3 +212,108 @@ def eliminar_producto():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route("/create-user", methods=["POST"])
+def crear_usuario():
+    try:
+        # Conexión a la base de datos
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        # Obtén los datos del cuerpo de la solicitud
+        data = request.json
+        name = data.get("name")
+        email = data.get("email")
+        password = data.get("password")
+        role = data.get("role")
+
+        # Imprimir para verificar el valor de role
+        print(f"Rol recibido: {role}")  # Verifica qué valor tiene el role
+
+        # Validación de los datos
+        if not name or not email or not password:
+            return jsonify({"error": "Faltan parámetros"}), 400
+
+        # Asignar el Rol_ID según el rol proporcionado
+        if role == "Cliente":
+            role_id = 1  # Cliente
+        elif role == "Administrador":
+            role_id = 2  # Administrador
+        else:
+            return jsonify({"error": "Rol no válido"}), 400  # Si el rol no es válido, devolver error
+
+        # Verificar el rol asignado
+        print(f"Rol asignado: {role_id}")  # Verifica que se asigne correctamente
+
+        # Comprobar si el usuario ya existe
+        query_check_user = "SELECT * FROM Usuarios WHERE email = ?"
+        cursor.execute(query_check_user, (email,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            return jsonify({"error": "El usuario ya existe con ese correo electrónico"}), 400
+
+        # Insertar el nuevo usuario con el Rol_ID
+        query_insert_user = "INSERT INTO Usuarios (name, email, password, Rol_id) VALUES (?, ?, ?, ?)"
+        cursor.execute(query_insert_user, (name, email, password, role_id))
+        connection.commit()
+
+        return jsonify({"message": "Usuario creado exitosamente"}), 201
+
+    except sqlite3.Error as e:
+        return jsonify({"error": f"Error en la base de datos: {str(e)}"}), 500
+
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+
+
+@app.route("/login", methods=['POST'])
+def login():
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+
+        if connection:
+                data = request.json
+                email = data.get('email')
+                password = data.get('password')
+
+                if not email or not password:
+                    return jsonify({"error": "Faltan parámetros"}), 400
+
+                # Verificar las credenciales del usuario
+                cursor.execute("SELECT name, email, Rol_ID FROM Usuarios WHERE email = ? AND password = ?", (email, password))
+                user = cursor.fetchone()
+
+                if user:
+                    # Asignar rol según el Rol_ID
+                    rol_id = user[2]
+                    if rol_id == 1:
+                        role = "cliente"
+                    elif rol_id == 2:
+                        role = "administrador"
+                    else:
+                        role = "desconocido"
+
+                    # Si el usuario existe, enviar el objeto con el rol
+                    return jsonify({
+                        "message": "Inicio de sesión exitoso",
+                        "usuario": {
+                            "name": user[0],
+                            "email": user[1],
+                            "role": role  # Devolver el rol como un string más comprensible
+                        }
+                    }), 200
+                else:
+                    return jsonify({"error": "Credenciales incorrectas"}), 401
+
+    except Exception as e:
+        return jsonify({"error": f"Error en el servidor: {str(e)}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()

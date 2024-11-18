@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./MainContent.css";
 import ProductForm from "./ProductForm";
-import DeleteForm from "./DeleteForm";
-
 // Crea interfaces que definen qué contienen los objetos
 interface Product {
   Id: number;
@@ -38,11 +36,7 @@ export default function MainContent({
   const productsPerPage = 4; // Número de productos por página
   const [userRoleState, setUserRoleState] = useState("")
 
-  const handleAddProduct = (newProduct: Product) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]); // Agregar el nuevo producto al estado
-    setShowProductForm(false); // Cerrar el formulario después de agregar el producto
-  };
-
+ 
   const handleRemoveProduct = (productName: string) => {
     fetch("http://127.0.0.1:5000/eliminar_producto", {
       method: "DELETE",
@@ -202,7 +196,7 @@ export default function MainContent({
                         >
                           Añadir al carrito
                         </button> : <>...</>}
-                       {userRoleState && userRoleState === "admin" ? <button
+                       {userRoleState && userRoleState === "administrador" ? <button
                           onClick={() => handleRemoveProduct(product.Nombre)}
                           className="ml-2 text-sm rounded-md bg-white-500 text-white py-1 px-2 hover:bg-red-600"
                           title="Eliminar"

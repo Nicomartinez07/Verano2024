@@ -41,13 +41,13 @@ const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
     const storedLoginStatus = localStorage.getItem("isLoggedIn");
-
+  
     if (storedLoginStatus === "true" && storedRole) {
       setIsLoggedIn(true);
       setUserRole(storedRole);
     }
   }, []);
-
+  
   // Guardar el estado de la sesión en localStorage cuando se cambia
   useEffect(() => {
     if (isLoggedIn) {
@@ -99,34 +99,56 @@ const Header: React.FC<HeaderProps> = ({
     setIsCartVisible(!isCartVisible);
   };
 
-  // Manejador de cierre de sesión
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserRole(null); // Limpia el rol del usuario
-    localStorage.removeItem("userRole")
-    location.reload()
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("isLoggedIn");
+    location.reload();
   };
 
-  // Manejador de inicio de sesión
-  const handleLogin = (username: string, password: string) => {
-    if (
-      (username === "cliente" && password === "cliente") ||
-      (username === "admin" && password === "admin")
-    ) {
-      setIsLoggedIn(true);
-      setShowLogin(false); // Cierra el formulario de login
-
-      if (username === "admin") {
-        setUserRole("admin");
-        location.reload()
-      } else {
-        setUserRole("cliente");
-        location.reload()
-      } 
-    } else {
-      alert("Credenciales incorrectas"); // Mensaje de error
-    }
+  const handleLogin = ( email: string, password: string) => {
+    fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // Si la respuesta no es exitosa, lanza un error
+          return response.json().then((error) => {
+            throw new Error(error.message || "Credenciales incorrectas");
+          });
+        }
+        return response.json(); // Procesa la respuesta si es exitosa
+      })
+      .then((data) => {
+        // Verifica que el objeto tenga la propiedad 'usuario' y 'role'
+        if (data.usuario && data.usuario.role) {
+          setIsLoggedIn(true);
+          setUserRole(data.usuario.role);
+  
+          // Guardar sesión en localStorage
+          localStorage.setItem("isLoggedIn", "true");
+          localStorage.setItem("userRole", data.usuario.role);
+  
+          setShowLogin(false); // Cierra el formulario de login
+          location.reload();   // Recarga la página para reflejar el cambio
+        } else {
+          alert("Credenciales incorrectas");
+        }
+      })
+      .catch((error) => {
+        // Maneja cualquier error, ya sea de la respuesta o del fetch
+        alert(error.message || "Hubo un error al iniciar sesión");
+        console.error(error);
+      });
   };
+  
+  
+  
 
   const handleAddProduct = (newProduct: Product) => {
     onAddProduct(newProduct);
@@ -182,7 +204,7 @@ const Header: React.FC<HeaderProps> = ({
                   Cerrar Sesión
                 </button>
                 <span className="text-white font-bold flex items-center">
-                  {userRole === "admin" && (
+                  {userRole === "administrador" && (
                     <>
                       <FaUserAstronaut className="mr-2" /> Administrador
                     </>
@@ -288,7 +310,7 @@ const Header: React.FC<HeaderProps> = ({
           </>
         )}
 
-        {isLoggedIn && userRole === "admin" && (
+        {isLoggedIn && userRole === "administrador" && (
           <>
             <div className="flex space-x-4">
               <button
